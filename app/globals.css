@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-primary
+}
+
+
+.slim-scroll::-webkit-scrollbar {
+  @apply w-1
+}
+
+.slim-scroll::-webkit-scrollbar-thumb {
+  @apply bg-secondary rounded
+}
+
+.no-spin-arrows::-webkit-inner-spin-button,
+.no-spin-arrows::-webkit-outer-spin-button {
+ -webkit-appearance: none;
+ margin: 0;
+}
