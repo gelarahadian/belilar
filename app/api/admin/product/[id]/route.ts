@@ -49,7 +49,7 @@ export async function PUT(
         brand,
         images,
         categoryId,
-        tagIDs,
+        tagIds: tagIDs,
       },
     });
     return Response.json({ productUpdated });
