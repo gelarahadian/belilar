@@ -18,7 +18,9 @@ const Step3: FC<Step3Props> = ({ onPrevStep }) => {
   const handleClick = async () => {
     setLoading(true);
     try {
-      const payload = {};
+      const payload: { cartItems: any[]; couponCode?: string } = {
+        cartItems: [],
+      };
 
       const cartData = cartItems?.map((item) => ({
         id: item.id,
