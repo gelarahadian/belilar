@@ -1,16 +1,10 @@
 "use client";
-import {
-  Product as PrismaProduct,
-  Category,
-  Tag,
-  Rating,
-} from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
 import ProductLike from "./ProductLike";
 import ProductRating from "./ProductRating";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/id";
 import AddToCart from "./AddToCart";
