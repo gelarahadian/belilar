@@ -1,11 +1,21 @@
 import { auth } from "@/auth";
 import { PrismaClient } from "@prisma/client";
 
+interface CartItem {
+  id: string;
+  quantity: number;
+}
+
+interface RequestBody {
+  cartItems: CartItem[];
+  couponCode?: string;
+}
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: Request) {
   const prisma = new PrismaClient();
-  const { cartItems, couponCode } = await req.json();
+  const { cartItems, couponCode } = (await req.json()) as RequestBody;
   const data = await auth();
   try {
     const lineItems = await Promise.all(
