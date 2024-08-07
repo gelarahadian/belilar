@@ -37,7 +37,7 @@ export async function GET(req: Request) {
             brand: (brand as string) || undefined,
           },
           {
-            tagIDs: tag
+            tagIds: tag
               ? {
                   has: Array.isArray(tag) ? tag[0] : tag || undefined,
                 }
