@@ -6,7 +6,11 @@ import UserReviews from "../../components/UserReviews";
 import CouponCode from "../../components/CouponCode";
 import AddToCart from "../../components/AddToCart";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const data = await fetchProduct(params?.slug);
   const { product } = data;
 
