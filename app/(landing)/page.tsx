@@ -3,9 +3,7 @@ import ProductCard from "./components/ProductCard";
 
 const fetchProducts = async () => {
   try {
-    const res = await fetch(`${process.env.API}/product`, {
-      cache: "no-store",
-    });
+    const res = await fetch(`${process.env.API}/product`);
     if (!res.ok) {
       console.log("Fetching products Error: " + res);
     }
