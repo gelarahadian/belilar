@@ -4,7 +4,6 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
-import bcrypt from "bcryptjs";
 
 class InvalidLoginError extends CredentialsSignin {
   code = "Invalid identifier or password";
@@ -91,17 +90,5 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   secret: process.env.AUTH_SECRET,
   pages: { signIn: "/login" },
-  // debug: true,
-  basePath: "/api/auth",
-  // logger: {
-  //   error(code, ...message) {
-  //     console.log(code, message);
-  //   },
-  //   warn(code, ...message) {
-  //     console.log(code, message);
-  //   },
-  //   debug(code, ...message) {
-  //     console.log(code, message);
-  //   },
-  // },
+
 });

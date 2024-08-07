@@ -21,7 +21,6 @@ const fetchProducts = async () => {
 
 const page = async () => {
   const { products } = await fetchProducts();
-  console.log(products);
   return (
     <main className="max-w-6xl mx-auto w-full p-3">
       <h1 className="text-2xl font-bold text-center mb-3">Product Unggul</h1>
@@ -31,9 +30,6 @@ const page = async () => {
             <ProductCard key={product.id} product={product} />
           ))}
       </ul>
-      <code>
-        <pre>{JSON.stringify(products, null, 4)}</pre>
-      </code>
     </main>
   );
 };
