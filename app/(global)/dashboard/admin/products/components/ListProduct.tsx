@@ -52,7 +52,7 @@ const ListProduct = () => {
     setValue("color", product.color);
     setValue("brand", product.brand);
     setValue("categoryId", product.categoryId);
-    setValue("tagIDs", product.tagIDs);
+    setValue("tagIDs", product.tagIds);
     router.push("/dashboard/admin/add-product");
   };
 
