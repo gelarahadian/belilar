@@ -2,12 +2,18 @@ import React from "react";
 import ProductFilter from "../components/ProductFilter";
 import ProductCard from "../components/ProductCard";
 import Pagination from "../components/Pagination";
+import { Product } from "@/context/product";
 
 export const dynamic = "force-dynamic";
 
 const fetchProducts = async (searchParams: {
   [key: string]: string | undefined;
-}) => {
+}): Promise<{
+  currentPage: number;
+  totalProducts: number;
+  totalPages: number;
+  products: Product[];
+}> => {
   const searchQuery = new URLSearchParams({
     page: String(searchParams.page || 1),
     minPrice: searchParams.minPrice || "",
@@ -40,7 +46,7 @@ const fetchProducts = async (searchParams: {
     return data;
   } catch (err) {
     console.log(err);
-    return { products: [], currenctPage: 1, totalPages: 1 };
+    return { products: [], currentPage: 1, totalPages: 1, totalProducts: 0 };
   }
 };
 
