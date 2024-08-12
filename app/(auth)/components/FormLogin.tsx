@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 interface FormLoginProps {}
 
-const FormLogin: FC<FormLoginProps> = async () => {
+const FormLogin: FC<FormLoginProps> = () => {
   // const [state, formAction] = useActionState(action, null);
   // const session = await auth();
 
