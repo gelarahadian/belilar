@@ -18,12 +18,13 @@ export async function PUT(
       where: { slug: slugifyName },
     });
 
-    // if (existingCategory) {
-    //   return Response.json(
-    //     { success: false, message: "Tag already exists" },
-    //     { status: 409 }
-    //   );
-    // }
+    if (existingCategory) {
+      return Response.json(
+        { success: false, message: "Tag already exists" },
+        { status: 409 }
+      );
+    }
+
     const tagUpdated = await prisma.category.update({
       where: {
         id: id,
@@ -34,7 +35,6 @@ export async function PUT(
         updatedAt: new Date(),
       },
     });
-
     return Response.json({ tagUpdated });
   } catch (err: any) {
     return Response.json({ err: err.message });
