@@ -4,9 +4,10 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
+import bcrypt from "bcryptjs";
 
 class InvalidLoginError extends CredentialsSignin {
-  code = "Invalid identifier or password";
+  code = "Invalid email or password";
 }
 
 declare module "next-auth" {
@@ -52,14 +53,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         if (typeof user.password !== "string") {
-          throw new Error("Password is not available or not a string.");
+          throw new InvalidLoginError();
         }
 
-        // const valid = await bcrypt.compare(password as string, user.password);
+        const valid = await bcrypt.compare(password as string, user.password);
 
-        // if (!valid) {
-        //   throw new Error("Email Or Password Invalid");
-        // }
+        if (!valid) {
+          throw new InvalidLoginError();
+        }
 
         return {
           id: user.id,
@@ -90,5 +91,4 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   secret: process.env.AUTH_SECRET,
   pages: { signIn: "/login" },
-
 });

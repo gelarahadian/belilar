@@ -1,18 +1,37 @@
-import { action } from "@/action";
+"use client";
+import { login } from "@/action";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input/Input";
 import { auth, signIn, signOut } from "@/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { FC } from "react";
+import toast from "react-hot-toast";
 
 interface FormLoginProps {}
 
 const FormLogin: FC<FormLoginProps> = async () => {
   // const [state, formAction] = useActionState(action, null);
-  const session = await auth();
+  // const session = await auth();
+
+  const router = useRouter();
+
+  const handleAction = async (formData: FormData) => {
+    try {
+      const err = await login(formData);
+      if (err) {
+        toast.error(err);
+        return;
+      }
+      toast.success("Berhasil Masuk");
+      router.push("/");
+    } catch (err: any) {
+      toast.error(err);
+    }
+  };
 
   return (
-    <form action={action}>
+    <form action={handleAction}>
       <Input label="Email" id="email" placeholder="Contoh: user@gmail.com" />
       <Input
         label="Password"
@@ -44,7 +63,7 @@ const FormLogin: FC<FormLoginProps> = async () => {
           Daftar
         </Link>
       </p>
-      <pre>{JSON.stringify(session, null, 4)}</pre>
+      {/* <pre>{JSON.stringify(session, null, 4)}</pre> */}
     </form>
   );
 };
