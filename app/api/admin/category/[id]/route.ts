@@ -19,7 +19,10 @@ export async function PUT(
     });
 
     if (existingCategory) {
-      return Response.json("Tag already exists", { status: 409 });
+      return Response.json(
+        { success: false, message: "Tag already exists" },
+        { status: 409 }
+      );
     }
 
     const tagUpdated = await prisma.category.update({
