@@ -11,9 +11,6 @@ import toast from "react-hot-toast";
 interface FormLoginProps {}
 
 const FormLogin: FC<FormLoginProps> = () => {
-  // const [state, formAction] = useActionState(action, null);
-  // const session = await auth();
-
   const router = useRouter();
 
   const handleAction = async (formData: FormData) => {
@@ -25,6 +22,7 @@ const FormLogin: FC<FormLoginProps> = () => {
       }
       toast.success("Berhasil Masuk");
       router.push("/");
+      router.refresh();
     } catch (err: any) {
       toast.error(err);
     }

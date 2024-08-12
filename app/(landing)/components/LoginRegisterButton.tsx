@@ -10,7 +10,7 @@ const LoginRegisterButton = () => {
       <Button
         variant="border"
         onClick={() => router.push("register")}
-        className="border-secondary text-secondary hover:bg-secondary hover:text-white"
+        className="border-secondary text-secondary hover:bg-secondary "
       >
         Daftar
       </Button>
