@@ -9,7 +9,7 @@ import ProductSearchForm from "./ProductSearchForm";
 import { BsFillCartCheckFill } from "react-icons/bs";
 import CartIcon from "./CartIcon";
 
-const Header = async () => {
+const Header = () => {
   return (
     <header className="flex justify-between items-center sticky top-0 z-20 px-4 h-14 bg-primary border-b-2  ">
       <div className="flex items-center space-x-6">
