@@ -18,13 +18,12 @@ export async function PUT(
       where: { slug: slugifyName },
     });
 
-    if (existingCategory) {
-      return Response.json(
-        { success: false, message: "Tag already exists" },
-        { status: 409 }
-      );
-    }
-
+    // if (existingCategory) {
+    //   return Response.json(
+    //     { success: false, message: "Tag already exists" },
+    //     { status: 409 }
+    //   );
+    // }
     const tagUpdated = await prisma.category.update({
       where: {
         id: id,
