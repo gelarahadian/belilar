@@ -1,4 +1,4 @@
-// "use server";
+"use client";
 import React from "react";
 import Image from "next/image";
 import { auth, signOut } from "@/auth";
@@ -10,8 +10,6 @@ import { BsFillCartCheckFill } from "react-icons/bs";
 import CartIcon from "./CartIcon";
 
 const Header = async () => {
-  const session = await auth();
-
   return (
     <header className="flex justify-between items-center sticky top-0 z-20 px-4 h-14 bg-primary border-b-2  ">
       <div className="flex items-center space-x-6">
@@ -32,7 +30,7 @@ const Header = async () => {
         </Link>
       </div>
       <ProductSearchForm />
-      {session ? (
+      {/* {session ? (
         <div className="flex space-x-3">
           <CartIcon />
           <form
@@ -46,7 +44,7 @@ const Header = async () => {
         </div>
       ) : (
         <LoginRegisterButton />
-      )}
+      )} */}
     </header>
   );
 };
