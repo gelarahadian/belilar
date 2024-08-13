@@ -2,30 +2,31 @@
 import { login } from "@/action";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input/Input";
-import { auth, signIn, signOut } from "@/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
+import { flushSync } from "react-dom";
 import toast from "react-hot-toast";
 
 interface FormLoginProps {}
 
 const FormLogin: FC<FormLoginProps> = () => {
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleAction = async (formData: FormData) => {
-    try {
-      const err = await login(formData);
-      if (err) {
-        toast.error(err);
-        return;
-      }
-      toast.success("Berhasil Masuk");
-      router.push("/");
-      router.refresh();
-    } catch (err: any) {
+    flushSync(() => setLoading(true));
+    const err = await login(formData);
+    if (err) {
       toast.error(err);
+      setLoading(false);
+      return;
     }
+    toast.success("Berhasil Masuk");
+    router.push("/");
+    router.refresh();
+    setLoading(false);
   };
 
   return (
@@ -53,7 +54,7 @@ const FormLogin: FC<FormLoginProps> = () => {
       </div>
 
       <Button className="w-full" type="submit">
-        Masuk
+        {loading ? "Loading..." : "Masuk"}
       </Button>
       <p className="text-center text-secondaryText">
         Belum Punya Akun?{" "}

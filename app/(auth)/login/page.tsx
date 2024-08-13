@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { signIn, signOut } from "@/auth";
 
 import FormLogin from "../components/FormLogin";
 

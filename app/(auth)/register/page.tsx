@@ -54,7 +54,6 @@ const page = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
     setLoading(true);
 
     const name = data.firstName + " " + data.lastName;
@@ -125,7 +124,7 @@ const page = () => {
         </div>
 
         <Button className="w-full" type="submit">
-          Daftar
+          {loading ? "Loading..." : "Daftar"}
         </Button>
         <p className="text-center text-secondaryText">
           Sudah Punya Akun?{" "}
