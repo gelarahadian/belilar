@@ -20,7 +20,6 @@ const fetchProducts = async (
     }
 
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (err: any) {
     console.log(err);
@@ -29,12 +28,9 @@ const fetchProducts = async (
 };
 
 const page = async ({ searchParams }: { searchParams: { page: string } }) => {
-  console.log(searchParams);
   const { currentPage, totalProducts, totalPages, products } =
     await fetchProducts(searchParams.page);
 
-  console.log("totalProducts====>", totalProducts);
-  console.log("totalPages====>", totalPages);
   return (
     <main className="max-w-6xl mx-auto w-full p-3">
       <h1 className="text-2xl font-bold text-center mb-3">Product Unggul</h1>

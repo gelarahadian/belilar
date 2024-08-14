@@ -24,9 +24,7 @@ const ProductForm = () => {
     errors,
     addProduct,
     updateProduct,
-    deleteProduct,
-    uploadImages,
-    deleteImage,
+
     onClearField,
   } = useProduct();
 
