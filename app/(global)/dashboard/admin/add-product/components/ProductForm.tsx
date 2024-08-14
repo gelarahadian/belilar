@@ -13,6 +13,7 @@ import { FaCheck } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import FormImage from "./FormImage";
 import Label from "@/app/components/Label";
+import { Editor } from "@tinymce/tinymce-react";
 
 const ProductForm = () => {
   const {
@@ -98,13 +99,19 @@ const ProductForm = () => {
             errors={errors}
           />
         </div>
-        <TextArea
-          label="Deskripsi"
-          id="description"
-          placeholder="Masukan Deskripsi Produk"
-          register={register}
-          rows={7}
-          errors={errors}
+        <Editor
+          apiKey="94q676lvoxfx730eb3bng8izuenvdlyqffbmar7aldc318uf"
+          init={{
+            height: 300,
+            menubar: false,
+            statusbar: false,
+            plugins: "link image code",
+            toolbar:
+              "undo redo | bold italic | alignleft aligncenter alignright | code",
+          }}
+          onEditorChange={(content) => {
+            setValue("description", content);
+          }}
         />
         <div className="flex space-x-6">
           <Input
