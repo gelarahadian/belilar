@@ -1,7 +1,7 @@
 "use client";
-import { login } from "@/action";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input/Input";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FC, useState } from "react";
@@ -17,15 +17,30 @@ const FormLogin: FC<FormLoginProps> = () => {
 
   const handleAction = async (formData: FormData) => {
     flushSync(() => setLoading(true));
-    const err = await login(formData);
-    if (err) {
-      toast.error(err);
-      setLoading(false);
+    const res = await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirect: false,
+    });
+    console.log(res);
+    if (res?.error) {
+      if (res.error === "CredentialsSignin") {
+        toast.error("Email atau Password Salah");
+        setLoading(false);
+      }
       return;
     }
-    toast.success("Berhasil Masuk");
+    toast.success("Login Success");
     router.push("/");
-    router.refresh();
+    // const err = await login(formData);
+    // if (err) {
+    //   toast.error(err);
+    //   setLoading(false);
+    //   return;
+    // }
+    // toast.success("Berhasil Masuk");
+    // router.push("/");
+    // router.refresh();
     setLoading(false);
   };
 

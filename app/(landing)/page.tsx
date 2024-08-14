@@ -38,7 +38,7 @@ const page = async ({ searchParams }: { searchParams: { page: string } }) => {
   return (
     <main className="max-w-6xl mx-auto w-full p-3">
       <h1 className="text-2xl font-bold text-center mb-3">Product Unggul</h1>
-      <ul className="flex flex-wrap gap-3">
+      <ul className="flex justify-center flex-wrap gap-3">
         {products &&
           products.map((product: any) => (
             <ProductCard key={product.id} product={product} />

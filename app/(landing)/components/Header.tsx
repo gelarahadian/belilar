@@ -2,19 +2,17 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import LoginRegisterButton from "./LoginRegisterButton";
 import ProductSearchForm from "./ProductSearchForm";
 import CartIcon from "./CartIcon";
-import { logout } from "@/action";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const handleLogout = () => {
-    logout();
-    router.refresh();
+  const handleLogout = async () => {
+    await signOut();
   };
   return (
     <header className="flex justify-between items-center sticky top-0 z-20 px-4 h-14 bg-primary border-b-2  ">
@@ -36,7 +34,7 @@ const Header = () => {
         </Link>
       </div>
       <ProductSearchForm />
-      {session ? (
+      {status === "authenticated" ? (
         <div className="flex space-x-3">
           <CartIcon />
           <form action={handleLogout}>
@@ -44,7 +42,13 @@ const Header = () => {
           </form>
         </div>
       ) : (
-        <LoginRegisterButton />
+        <>
+          {status === "loading" ? (
+            <div className="">Loading...</div>
+          ) : (
+            <LoginRegisterButton />
+          )}
+        </>
       )}
     </header>
   );

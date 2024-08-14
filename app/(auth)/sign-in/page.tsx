@@ -1,14 +1,9 @@
 "use client";
-import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
 import FormLogin from "../components/FormLogin";
 
 const page = () => {
-  // const [loading, setLoading] = useState(false);
-
-  // const router = useRouter();
-
   return (
     <>
       <h1 className="text-header font-bold text-center mb-3">Login</h1>
