@@ -4,7 +4,7 @@ import Input from "@/app/components/Input/Input";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { FC, useState } from "react";
+import React, { ChangeEventHandler, FC, useState } from "react";
 import { flushSync } from "react-dom";
 import toast from "react-hot-toast";
 
@@ -12,6 +12,7 @@ interface FormLoginProps {}
 
 const FormLogin: FC<FormLoginProps> = () => {
   const [loading, setLoading] = useState(false);
+  const [typePassword, setTypePassword] = useState("password");
 
   const router = useRouter();
 
@@ -32,16 +33,16 @@ const FormLogin: FC<FormLoginProps> = () => {
     }
     toast.success("Login Success");
     router.push("/");
-    // const err = await login(formData);
-    // if (err) {
-    //   toast.error(err);
-    //   setLoading(false);
-    //   return;
-    // }
-    // toast.success("Berhasil Masuk");
-    // router.push("/");
-    // router.refresh();
     setLoading(false);
+  };
+
+  const handleShowPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("is checked ====> ", e.target.checked);
+    if (e.target.checked === true) {
+      setTypePassword("text");
+    } else {
+      setTypePassword("password");
+    }
   };
 
   return (
@@ -51,8 +52,12 @@ const FormLogin: FC<FormLoginProps> = () => {
         label="Password"
         id="password"
         placeholder="Contoh: IniUser123"
-        type="password"
+        type={typePassword}
       />
+      <input type="checkbox" id="show-password" onChange={handleShowPassword} />
+      <label htmlFor="show-password" className="text-secondaryText ml-2">
+        Show Password
+      </label>
       <div className="flex justify-between items-center mb-3">
         <div className="mb-4 flex items-center">
           <input id="remember-me" type="checkbox" className="mr-2 " />
@@ -77,7 +82,6 @@ const FormLogin: FC<FormLoginProps> = () => {
           Daftar
         </Link>
       </p>
-      {/* <pre>{JSON.stringify(session, null, 4)}</pre> */}
     </form>
   );
 };
