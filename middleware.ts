@@ -4,8 +4,6 @@ import NextAuth from "next-auth";
 // export const { auth: middleware } = NextAuth(authConfig);
 
 export default auth((req) => {
-  console.log("req.auth ===>", req.auth);
-
   if (!req.auth) {
     if (req.nextUrl.pathname.startsWith("/dashboard")) {
       const newUrl = new URL("sign-in", req.nextUrl.origin);

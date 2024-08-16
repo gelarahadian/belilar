@@ -2,6 +2,8 @@
 import React from "react";
 
 import FormLogin from "../components/FormLogin";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 const page = () => {
   return (
@@ -14,7 +16,7 @@ const page = () => {
           <p>ATAU</p>
         </div>
       </div>
-      {/* <button
+      <button
         type="button"
         onClick={() => signIn("google")}
         className="flex justify-center items-center bg-transparant border border-black h-8 w-full rounded-lg px-4 font-bold "
@@ -27,7 +29,7 @@ const page = () => {
           className="mr-2 "
         ></Image>
         Lanjutkan Dengan Google
-      </button> */}
+      </button>
     </>
   );
 };
