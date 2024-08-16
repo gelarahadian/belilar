@@ -11,8 +11,12 @@ class InvalidLoginError extends CredentialsSignin {
 }
 
 declare module "next-auth" {
+  interface User {
+    role: string | null;
+  }
   interface Session {
     user: {
+      role: string;
       id: string;
     } & DefaultSession["user"];
   }
@@ -64,6 +68,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         return {
           id: user.id,
+          role: user.role,
           name: user.name,
           email: user.email,
           image: user.image,
@@ -76,6 +81,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (account) {
         token.accessToken = account.access_token;
         token.id = user?.id;
+        token.role = user?.role;
       }
       return token;
     },
@@ -85,6 +91,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         user: {
           ...session.user,
           id: token.id as string,
+          role: token.role as string,
         },
       };
     },

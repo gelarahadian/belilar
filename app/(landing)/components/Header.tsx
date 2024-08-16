@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 const Header = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  console.log(session?.user);
   const handleLogout = async () => {
     await signOut();
   };
