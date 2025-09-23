@@ -128,7 +128,7 @@ const page = () => {
         </Button>
         <p className="text-center text-secondaryText">
           Sudah Punya Akun?{" "}
-          <Link href={"/login"} className="text-secondary underline">
+          <Link href={"/sign-in"} className="text-secondary underline">
             Login
           </Link>
         </p>

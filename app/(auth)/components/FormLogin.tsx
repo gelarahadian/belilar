@@ -78,7 +78,7 @@ const FormLogin: FC<FormLoginProps> = () => {
       </Button>
       <p className="text-center text-secondaryText">
         Belum Punya Akun?{" "}
-        <Link href={"/register"} className="text-secondary underline">
+        <Link href={"/sign-up"} className="text-secondary underline">
           Daftar
         </Link>
       </p>
