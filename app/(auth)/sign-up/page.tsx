@@ -66,7 +66,7 @@ const page = () => {
     }
 
     toast.success("Berhasil Mendaftar");
-    router.push("/login");
+    router.push("/sign-in");
 
     setLoading(false);
     return;

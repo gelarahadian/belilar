@@ -39,7 +39,7 @@ const Button: FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={` rounded-lg px-4 h-10 font-bold text-center text-nowrap transition-all duration-200 ease-linear ${classVariant} ${className}`}
+      className={`text-sm rounded-lg px-4 py-1 font-semibold text-center text-nowrap transition-all duration-200 ease-linear ${classVariant} ${className}`}
     >
       {children}
     </button>
