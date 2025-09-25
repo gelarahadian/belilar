@@ -21,7 +21,7 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
   return (
     <li
       key={product.id}
-      className="flex flex-col justify-between w-80 border-1 rounded"
+      className="flex flex-col justify-between w-52 border-1 rounded bg-white"
     >
       <div className=" mb-2">
         <Link href={`/product/${product.slug}`}>

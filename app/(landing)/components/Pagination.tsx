@@ -11,20 +11,22 @@ const Pagination: FC<PaginationProps> = ({ currentPage, totalPages }) => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex justify-center w-full">
+    <nav className="flex justify-center w-full mt-3">
       <ul className="flex flex-wrap mx-auto space-x-3">
         {Array.from({ length: totalPages }, (_, index) => {
           const page = index + 1;
           const active = currentPage === page;
           return (
-            <li
-              key={page}
-              className={`flex justify-center items-center text-lg ${
-                active ? "bg-secondary text-primary" : "border-secondary"
-              } w-12 h-12 text-center bg-primary shadow-md rounded-full`}
-            >
-              <a href={`${pathname}?page=${page}`}>{page}</a>
-            </li>
+            <a href={`${pathname}?page=${page}`}>
+              <li
+                key={page}
+                className={`flex justify-center items-center text-sm ${
+                  active ? "bg-secondary text-white" : "border-secondary"
+                } w-8 h-6 text-center bg-primary shadow-md`}
+              >
+                {page}
+              </li>
+            </a>
           );
         })}
       </ul>

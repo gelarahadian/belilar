@@ -21,7 +21,7 @@ const config: Config = {
         secondaryText: "12px",
       },
       backgroundColor: {
-        primary: "#FFF",
+        primary: "#FEFBF6",
         secondary: "#65B741",
         accent: "#FFD23F",
         lightGrey: "#F6F5F2",

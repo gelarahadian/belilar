@@ -1,4 +1,3 @@
-import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "./components/Provider";
@@ -18,10 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Provider>
-      <html lang="en" className={`${inter.className}`}>
-        {children}
-      </html>
-    </Provider>
+    <html lang="en" className={`${inter.className}`}>
+      <Provider>{children}</Provider>
+    </html>
   );
 }
