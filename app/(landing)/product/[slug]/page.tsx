@@ -1,10 +1,10 @@
 import Image from "next/image";
 import React from "react";
 import ProductImage from "./components/ProductImage";
-import ProductRating from "../../components/ProductRating";
+import ProductRating from "../../../components/ProductCard/ProductRating";
 import UserReviews from "../../components/UserReviews";
 import CouponCode from "../../components/CouponCode";
-import AddToCart from "../../components/AddToCart";
+import AddToCart from "../../../components/ProductCard/AddToCart";
 
 export async function generateMetadata({
   params,

@@ -1,6 +1,6 @@
 import React from "react";
 import ProductFilter from "../components/ProductFilter";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from "../components/Pagination";
 import { Product } from "@/context/product";
 
@@ -67,18 +67,6 @@ const page = async ({
         })}
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
-
-      <div>
-        <pre>
-          {JSON.stringify(
-            { currentPage, totalProducts, totalPages, products },
-            null,
-            3
-          )}
-        </pre>
-      </div>
-
-      {/* <Pagination/> */}
     </main>
   );
 };

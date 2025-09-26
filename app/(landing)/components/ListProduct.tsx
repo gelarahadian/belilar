@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import ProductCard from './ProductCard';
+import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from './Pagination';
 import {Product} from '@/context/product';
 

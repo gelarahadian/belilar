@@ -1,7 +1,7 @@
 import { useCart } from "@/context/cart";
 import Image from "next/image";
 import React, { FC } from "react";
-import AddToCart from "../../components/AddToCart";
+import AddToCart from "../../../components/ProductCard/AddToCart";
 import Button from "@/app/components/Button";
 import OrderSummary from "./OrderSummary";
 
