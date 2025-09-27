@@ -25,6 +25,7 @@ const config: Config = {
         secondary: "#65B741",
         accent: "#FFD23F",
         lightGrey: "#F6F5F2",
+        darkGrey: "#EEEEEE",
       },
       textColor: {
         primary: "#333",

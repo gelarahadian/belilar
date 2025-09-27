@@ -6,5 +6,5 @@ export function calculateAverageRating(ratings: any) {
   }
 
   const averageRating = totalRating / ratings.length;
-  return averageRating;
+  return averageRating || 0;
 }

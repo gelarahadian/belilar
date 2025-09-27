@@ -9,6 +9,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/id";
 import AddToCart from "./AddToCart";
 import { Product } from "@/context/product";
+import { calculateAverageRating } from "@/lib/helpers";
+import { IoStar } from "react-icons/io5";
 
 dayjs.locale("id");
 dayjs.extend(relativeTime);
@@ -21,10 +23,10 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
   return (
     <li
       key={product.id}
-      className="flex flex-col justify-between w-52 border-1 rounded bg-white"
+      className="flex flex-col justify-between w-52 border-1 rounded bg-white border"
     >
-      <div className=" mb-2">
-        <Link href={`/product/${product.slug}`}>
+      <Link href={`/product/${product.slug}`}>
+        <div className=" mb-2">
           <div className="w-full h-48 rounded overflow-hidden relative">
             <Image
               src={
@@ -36,49 +38,25 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
               className="object-cover"
             />
           </div>
-        </Link>
-      </div>
+        </div>
 
-      {/* <p>Rp{product.price}</p> */}
-      <div className="px-2 mb-2 space-y-1">
-        <Link href={`/product/${product.slug}`}>
-          <h4 className="text-subtitle truncate">
-            <strong>Rp.{product.price}</strong> {product.title}
-          </h4>
-        </Link>
-        <del>
-          <h4 className="text-subtitle text-red-500">
-            Rp.{product.previousPrice}
-          </h4>
-        </del>
-        <p className="text-sm text-gray-500 truncate">{product.description}</p>
-        <section className="space-y-1">
-          <div className="flex justify-between border-b">
-            <p className="truncate text-secondaryText">
-              Kategori: {product?.category?.name}
-            </p>
-            <p className="truncate text-secondaryText">
-              Tag:{" "}
-              {product.tags &&
-                product.tags.map((tag) => (
-                  <span key={tag.id}>{tag.name},</span>
-                ))}
-            </p>
-          </div>
-          <div className="flex justify-between items-center border-b ">
-            <ProductLike product={product} />
+        <div className="px-3 mb-2 space-y-1">
+          <h4 className="text-sm truncate">{product.title}</h4>
+          <p className="text-sm font-bold">
+            Rp{product.price.toLocaleString("id-ID")}
+          </p>
 
-            <p className="text-secondaryText truncate">
-              {dayjs(product.createdAt).fromNow()}
-            </p>
-          </div>
-          <div className="flex justify-between items-center border-b">
-            <p>brand: Naiki</p>
-            <ProductRating product={product} leaveRating={false} />
-          </div>
-        </section>
-        <AddToCart product={product} />
-      </div>
+          <section className="space-y-1">
+            <div className="flex justify-between items-center">
+              <p className="text-sm flex items-center">
+                <IoStar className="mr-1 text-orange-400" />
+                {calculateAverageRating(product.ratings)}
+              </p>
+              <p className="text-xs">1rb+ Terjual</p>
+            </div>
+          </section>
+        </div>
+      </Link>
     </li>
   );
 };

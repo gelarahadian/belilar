@@ -1,10 +1,7 @@
 import React from "react";
-import ProductCard from "../components/ProductCard/ProductCard";
-import Pagination from "./components/Pagination";
 import { Product } from "@/context/product";
 import Banner from "./components/Banner";
 import ListProduct from "./components/ListProduct";
-import ListCategory from "./components/ListCategory";
 
 const fetchProducts = async (
   page: string
@@ -37,7 +34,6 @@ const page = async ({ searchParams }: { searchParams: { page: string } }) => {
   return (
     <main className="container mx-auto w-full">
       <Banner />
-      <ListCategory />
       <ListProduct
         currentPage={currentPage}
         totalPages={totalPages}
