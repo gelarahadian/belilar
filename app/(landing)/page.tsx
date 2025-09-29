@@ -2,6 +2,7 @@ import React from "react";
 import { Product } from "@/context/product";
 import Banner from "./components/Banner";
 import ListProduct from "./components/ListProduct";
+import Footer from "../components/Footer/Footer";
 
 const fetchProducts = async (
   page: string
