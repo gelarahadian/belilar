@@ -43,7 +43,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const data = await fetchProduct(slug);
   const { product } = data;
   return (
-    <main className="max-w-6xl mx-auto p-3 ">
+    <main className="container mx-auto p-3 ">
       <article className="flex gap-6">
         <section className="flex-1">
           <ProductImage product={product} />

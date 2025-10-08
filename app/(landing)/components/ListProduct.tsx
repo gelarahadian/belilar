@@ -16,7 +16,7 @@ const ListProduct: FC<ListProductProps>  = ({currentPage, totalPages, products})
           REKOMENDASI
         </h1>
       </div>
-      <ul className="flex justify-start flex-wrap gap-[6px]">
+      <ul className="flex xl:justify-start justify-center flex-wrap gap-[6px]">
         {products &&
           products.map((product: any) => (
             <ProductCard key={product.id} product={product} />

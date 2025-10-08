@@ -13,8 +13,8 @@ const Header = () => {
     await signOut();
   };
   return (
-    <header className=" sticky top-0 z-20 px-4 py-4 border-b bg-white ">
-      <div className="flex justify-between items-center container mx-auto space-x-6">
+    <header className="sticky top-0 z-20 py-4 border-b bg-white ">
+      <div className="flex justify-between items-center container space-x-6">
         <div className="flex items-center space-x-3">
           <Link href="/">
             <section className="flex items-center overflow-hidden">
@@ -28,12 +28,12 @@ const Header = () => {
               <h1 className="text-lg font-bold text-nowrap">Belilar</h1>
             </section>
           </Link>
-          <Link href={"/shop"} className="text-[18px]">
+          <Link href={"/shop"} className="text-[18px] hidden sm:block">
             Belanja
           </Link>
         </div>
         <ProductSearchForm />
-        <div className="flex space-x-3 items-center">
+        <div className="hidden sm:flex space-x-3 items-center">
           <Cart />
           {status === "authenticated" ? (
             <form action={handleLogout}>

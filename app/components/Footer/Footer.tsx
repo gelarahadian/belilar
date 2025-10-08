@@ -5,18 +5,18 @@ import Description from './Description'
 
 const Footer = () => {
   return (
-    <>
+    <div>
       <div className="bg-white py-4 border-t border-t-secondary mt-4 ">
-        <div className="max-w-7xl mx-auto text-gray-500">
+        <div className="container text-gray-500">
           <Description />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto text-gray-500">
+      <div className="container mx-auto text-gray-500">
         <AppFooter />
         <CopyrightAndLanguage />
       </div>
-    </>
+    </div>
   );
 }
 

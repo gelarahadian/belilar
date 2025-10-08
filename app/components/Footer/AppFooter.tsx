@@ -3,12 +3,12 @@ import CategoryFooter from './CategoryFooter';
 
 const AppFooter = () => {
   return (
-    <div className="py-4 flex flex-wrap justify-between">
+    <div className="py-4 flex flex-wrap gap-4 justify-between">
       <CategoryFooter category="Layanan Pelanggan" />
-      <CategoryFooter category='Jelajahi Belilar'/>
-      <CategoryFooter category='Ikuti Kami'/>
-      <CategoryFooter category='Pembayaran'/>
-      <CategoryFooter category='Pengiriman'/>
+      <CategoryFooter category="Jelajahi Belilar" />
+      <CategoryFooter category="Ikuti Kami" />
+      <CategoryFooter category="Pembayaran" />
+      <CategoryFooter category="Pengiriman" />
     </div>
   );
 }

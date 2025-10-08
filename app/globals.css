@@ -19,6 +19,10 @@ body {
   @apply bg-secondary rounded
 }
 
+.container {
+  @apply xl:max-w-7xl xl:px-0 px-4 mx-auto 
+}
+
 .no-spin-arrows::-webkit-inner-spin-button,
 .no-spin-arrows::-webkit-outer-spin-button {
  -webkit-appearance: none;

@@ -33,7 +33,7 @@ const page = async ({ searchParams }: { searchParams: { page: string } }) => {
     await fetchProducts(searchParams.page);
 
   return (
-    <main className="container mx-auto w-full">
+    <main className="container w-full">
       <Banner />
       <ListProduct
         currentPage={currentPage}
