@@ -6,7 +6,7 @@ generator client {
 datasource db {
   provider  = "mongodb"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
+  directUrl = env("DIRECT_DATEBASE_URL")
 }
 
 model Account {
@@ -42,8 +42,9 @@ model Session {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?   @unique
+  email         String   @unique
   emailVerified DateTime? @map("email_verified")
+  passwordResetTokens PasswordResetToken[]
   password      String? @map("password")
   image         String?
   role          String? @default(value: "user") 
@@ -55,6 +56,18 @@ model User {
   updatedAt     DateTime @default(now())
  
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid()) @map("_id")
+  token     String   @unique           // SHA-256 hashed token
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("passwordResetTokens")
 }
  
 model VerificationToken {

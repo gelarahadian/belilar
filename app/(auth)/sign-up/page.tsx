@@ -1,160 +1,41 @@
 "use client";
-import Button from "@/app/components/Button";
-import Input from "@/app/components/Input/Input";
-import { signIn } from "next-auth/react";
+
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import FormSignUp from "../components/FormSignUp";
 
-type Inputs = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-async function onRegister(name: string, email: string, password: string) {
-  const res = await fetch(`${process.env.API}register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: name,
-      email: email,
-      password: password,
-    }),
-  });
-
-  return res;
-}
-
-const page = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-    },
-  });
-
-  const testSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-
-  const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
-
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    setLoading(true);
-
-    const name = data.firstName + " " + data.lastName;
-
-    const res = await onRegister(name, data.email, data.password);
-    if (!res.ok) {
-      toast.error("Gagal Mendaftar");
-      setLoading(false);
-      return;
-    }
-
-    toast.success("Berhasil Mendaftar");
-    router.push("/sign-in");
-
-    setLoading(false);
-    return;
-  };
+export default function SignUpPage() {
   return (
-    <>
-      <h1 className="text-header font-bold text-center mb-3">Daftar</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex items-end gap-4">
-          <Input
-            label="Nama: "
-            id="firstName"
-            placeholder="Nama Awal"
-            required={"Nama Awal Harus Diisi"}
-            register={register}
-            errors={errors}
-          />
-          <Input
-            id="lastName"
-            placeholder="Nama Akhir"
-            register={register}
-            errors={errors}
-          />
-        </div>
-        <Input
-          label="Email"
-          id="email"
-          placeholder="Contoh: user@gmail.com"
-          required="Email Harus Diisi"
-          pattern={{
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Email Tidak Valid",
-          }}
-          register={register}
-          errors={errors}
-        />
-        <Input
-          label="Password"
-          id="password"
-          placeholder="Contoh: IniUser123"
-          required="Password Harus Diisi"
-          pattern={{
-            value: /^(?=.*[A-Z]).{8,}$/,
-            message:
-              "Password harus mengandung setidaknya satu huruf besar dan memiliki panjang minimal 8 karakter",
-          }}
-          register={register}
-          errors={errors}
-        />
-        <div className="mb-3 flex items-center">
-          <input id="remember-me" type="checkbox" className="mr-2 " />
-          <label htmlFor="remember-me" className="text-secondaryText">
-            Remember Me
-          </label>
-        </div>
-
-        <Button className="w-full" type="submit">
-          {loading ? "Loading..." : "Daftar"}
-        </Button>
-        <p className="text-center text-secondaryText">
-          Sudah Punya Akun?{" "}
-          <Link href={"/sign-in"} className="text-secondary underline">
-            Login
-          </Link>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900">Create an Account</h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Join Belilar and start shopping today
         </p>
-      </form>
-
-      <div className="flex justify-center items-center relative  w-full h-[1px] bg-gray-300 my-6">
-        <div className="absolute bg-white px-4 ">
-          <p>ATAU</p>
-        </div>
       </div>
+
+      {/* Sign-up Form */}
+      <FormSignUp />
+
+      {/* Divider */}
+      <div className="relative flex items-center gap-3">
+        <div className="flex-1 h-px bg-gray-200" />
+        <span className="text-xs font-semibold text-gray-400 tracking-widest">
+          OR
+        </span>
+        <div className="flex-1 h-px bg-gray-200" />
+      </div>
+
+      {/* Google SSO */}
       <button
         type="button"
         onClick={() => signIn("google")}
-        className="flex justify-center items-center bg-transparant border border-black h-8 w-full rounded-lg px-4  "
+        className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150"
       >
-        <Image
-          src={"/google-color-svgrepo.svg"}
-          width={16}
-          height={16}
-          alt="google"
-          className="mr-2 "
-        ></Image>
-        Lanjutkan Dengan Google
+        <Image src="/google-color-svgrepo.svg" width={20} height={20} alt="" />
+        Continue with Google
       </button>
-    </>
+    </div>
   );
-};
-
-export default page;
+}
