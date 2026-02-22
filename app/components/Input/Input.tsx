@@ -1,5 +1,10 @@
 import React, { FC, ReactNode, useState } from "react";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
 import { MdClear } from "react-icons/md";
 import { HiExclamationCircle } from "react-icons/hi";
 
@@ -12,6 +17,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  validation?: RegisterOptions<FieldValues, string>;
 }
 
 const Input: FC<InputProps> = ({
@@ -26,6 +32,7 @@ const Input: FC<InputProps> = ({
   rightIcon,
   disabled,
   required,
+  validation,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -92,7 +99,7 @@ const Input: FC<InputProps> = ({
           }
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          {...register?.(id)}
+          {...register?.(id, validation)}
           {...rest}
           className={`
             flex-1 min-w-0 bg-transparent outline-none

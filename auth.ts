@@ -6,10 +6,6 @@ import Google from "next-auth/providers/google";
 import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
 import bcrypt from "bcryptjs";
 
-class InvalidLoginError extends CredentialsSignin {
-  code = "Invalid email or password";
-}
-
 declare module "next-auth" {
   interface User {
     role: string | null;
@@ -42,29 +38,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           label: "Password",
         },
       },
-      authorize: async ({ email, password }) => {
-        let user = null;
-
-        user = await prisma.user.findUnique({
+      authorize: async ({ email }) => {
+        if (!email) return null;
+        const user = await prisma.user.findUnique({
           where: {
             email: email as string,
           },
-          cacheStrategy: { ttl: 60 },
         });
 
-        if (!user) {
-          throw new InvalidLoginError();
-        }
-
-        if (typeof user.password !== "string") {
-          throw new InvalidLoginError();
-        }
-
-        const valid = await bcrypt.compare(password as string, user.password);
-
-        if (!valid) {
-          throw new InvalidLoginError();
-        }
+        if (!user) return null;
 
         return {
           id: user.id,

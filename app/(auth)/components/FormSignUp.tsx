@@ -9,6 +9,7 @@ import { HiMail, HiLockClosed, HiUser } from "react-icons/hi";
 
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input/Input";
+import { getStrength } from "@/lib/getStrength";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +52,7 @@ export default function FormSignUp() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -61,6 +63,9 @@ export default function FormSignUp() {
     },
   });
 
+  const watchedPassword = watch("password", "");
+  const strength = getStrength(watchedPassword);
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
 
@@ -68,34 +73,36 @@ export default function FormSignUp() {
     const res = await registerUser(fullName, data.email, data.password);
 
     if (!res.ok) {
-      toast.error("Registration failed. Please try again.");
+      const data = await res.json();
+      toast.error(data.message || "Registration failed. Please try again.");
       setLoading(false);
       return;
     }
 
-    toast.success("Account created! Redirecting to login…");
-    router.push("/sign-in");
+    toast.success("Account created! Please verify your email.");
+
+    router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-1" noValidate>
-        <Input
-          id="firstName"
-          label="First Name"
-          placeholder="John"
-          leftIcon={<HiUser />}
-          required
-          register={register}
-          errors={errors}
-        />
-        <Input
-          id="lastName"
-          label="Last Name"
-          placeholder="Doe"
-          leftIcon={<HiUser />}
-          register={register}
-          errors={errors}
-        />
+      <Input
+        id="firstName"
+        label="First Name"
+        placeholder="John"
+        leftIcon={<HiUser />}
+        required
+        register={register}
+        errors={errors}
+      />
+      <Input
+        id="lastName"
+        label="Last Name"
+        placeholder="Doe"
+        leftIcon={<HiUser />}
+        register={register}
+        errors={errors}
+      />
 
       {/* Email */}
       <Input
@@ -106,7 +113,10 @@ export default function FormSignUp() {
         leftIcon={<HiMail />}
         helperText="We'll never share your email with anyone."
         required
-        // pattern={EMAIL_PATTERN}
+        validation={{
+          required: "Email is required",
+          pattern: EMAIL_PATTERN,
+        }}
         register={register}
         errors={errors}
       />
@@ -120,9 +130,55 @@ export default function FormSignUp() {
         leftIcon={<HiLockClosed />}
         helperText="Min. 8 characters with at least one uppercase letter."
         required
-        // pattern={PASSWORD_PATTERN}
+        validation={{
+          required: "Password is required",
+          pattern: PASSWORD_PATTERN,
+        }}
         register={register}
         errors={errors}
+      />
+
+      {watchedPassword.length > 0 && (
+        <div className="space-y-1 pb-2">
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  i <= strength.score ? strength.color : "bg-gray-200"
+                }`}
+              />
+            ))}
+          </div>
+          {strength.label && (
+            <p
+              className={`text-xs font-semibold ${
+                strength.score <= 2
+                  ? "text-red-400"
+                  : strength.score === 3
+                    ? "text-secondary-500"
+                    : "text-primary-600"
+              }`}
+            >
+              {strength.label}
+            </p>
+          )}
+        </div>
+      )}
+
+      <Input
+        id="confirmPassword"
+        label="Confirm Password"
+        type="password"
+        placeholder="••••••••"
+        leftIcon={<HiLockClosed />}
+        required
+        register={register}
+        errors={errors}
+        validation={{
+          validate: (val: string) =>
+            val === watchedPassword || "Passwords do not match",
+        }}
       />
 
       {/* Submit */}

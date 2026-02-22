@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-primary text-primary
+  @apply bg-background text-primary
 }
 
 .container {

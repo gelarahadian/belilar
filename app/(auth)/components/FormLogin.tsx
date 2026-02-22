@@ -10,10 +10,6 @@ import toast from "react-hot-toast";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input/Input";
 
-const CREDENTIALS_ERROR_MAP: Record<string, string> = {
-  CredentialsSignin: "Email atau password salah. Silakan coba lagi.",
-};
-
 export default function FormLogin() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -22,21 +18,37 @@ export default function FormLogin() {
   const handleSubmit = async (formData: FormData) => {
     flushSync(() => setLoading(true));
 
-    const res = await signIn("credentials", {
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      redirect: false,
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    console.log(email, password);
+
+    // Step 1: Validasi via custom API
+    const res = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
     });
 
-    if (res?.error) {
-      const message =
-        CREDENTIALS_ERROR_MAP[res.error] ?? "Terjadi kesalahan. Coba lagi.";
-      toast.error(message);
+    const data = await res.json();
+
+    if (!res.ok) {
+      toast.error(data.error);
       setLoading(false);
       return;
     }
 
-    toast.success("Login berhasil! Mengalihkan…");
+    const signInRes = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (signInRes?.error) {
+      toast.error("Invalid email or password");
+      setLoading(false);
+      return;
+    }
+
+    toast.success("Login Success");
     router.push("/");
   };
 
@@ -46,6 +58,7 @@ export default function FormLogin() {
       <Input
         label="Email"
         id="email"
+        name="email"
         type="email"
         placeholder="user@gmail.com"
         autoComplete="email"
@@ -57,6 +70,7 @@ export default function FormLogin() {
         <Input
           label="Password"
           id="password"
+          name="password"
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"
           autoComplete="current-password"

@@ -21,9 +21,10 @@ const config: Config = {
         secondaryText: "12px",
       },
       backgroundColor: {
-        primary: "#FEFBF6",
-        secondary: "#65B741",
-        accent: "#FFD23F",
+        primary: "#166534", // green-800 (deep green)
+        secondary: "#22C55E", // green-500 (bright green)
+        accent: "#F97316", // orange-500 (clean orange)
+        background: "#F9FAFB", // light gray
         lightGrey: "#F6F5F2",
         darkGrey: "#EEEEEE",
       },

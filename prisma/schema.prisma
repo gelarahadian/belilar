@@ -45,6 +45,7 @@ model User {
   email         String   @unique
   emailVerified DateTime? @map("email_verified")
   passwordResetTokens PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
   password      String? @map("password")
   image         String?
   role          String? @default(value: "user") 
@@ -68,6 +69,18 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("passwordResetTokens")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())@map("_id")
+  otp       String                          // SHA-256 hashed OTP
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("emailVerificationTokens")
 }
  
 model VerificationToken {
