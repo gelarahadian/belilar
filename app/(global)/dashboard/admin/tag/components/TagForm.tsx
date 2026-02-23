@@ -70,7 +70,7 @@ const TagForm = () => {
           label="Tag"
           id="name"
           placeholder="Contoh: Kamera;"
-          required="Tag Harus Diisi"
+          required
           register={register}
           errors={errors}
           onClear={watch("id") && onClearInput}

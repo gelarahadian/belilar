@@ -54,7 +54,7 @@ const CategoryForm = () => {
         label="Kategori"
         id="name"
         placeholder="Contoh: Pakaian;"
-        required="Category Harus Di Isi"
+        required
         register={register}
         errors={errors}
         onClear={watch("id") && onClearInput}
