@@ -1,22 +1,26 @@
 "use client";
+
 import { useCart } from "@/context/cart";
 import Link from "next/link";
-import React from "react";
-import { BsFillCartCheckFill } from "react-icons/bs";
 import { IoCartOutline } from "react-icons/io5";
 
-const Cart = () => {
+export default function Cart() {
   const { cartItems } = useCart();
-  return (
-    <div className="relative">
-      <Link href={"/cart"} className="flex items-center space-x-2">
-        <IoCartOutline size={24} />
-        <span className="absolute flex justify-center items-center -right-1 -top-1 w-4 h-4 text-white bg-secondary rounded-full">
-          {cartItems.length}
-        </span>
-      </Link>
-    </div>
-  );
-};
+  const count = cartItems.length;
 
-export default Cart;
+  return (
+    <Link
+      href="/cart"
+      className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 transition-all duration-150"
+      aria-label={`Keranjang, ${count} item`}
+    >
+      <IoCartOutline className="text-xl" />
+
+      {count > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] flex items-center justify-center bg-secondary-500 text-white text-[10px] font-bold rounded-full px-1 shadow-md shadow-secondary-500/40 ring-2 ring-white">
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
+    </Link>
+  );
+}

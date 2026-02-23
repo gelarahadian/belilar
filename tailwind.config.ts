@@ -20,31 +20,17 @@ const config: Config = {
         subtitle: "18px",
         secondaryText: "12px",
       },
-      backgroundColor: {
-        primary: "#166534", // green-800 (deep green)
-        secondary: "#22C55E", // green-500 (bright green)
-        accent: "#F97316", // orange-500 (clean orange)
-        background: "#F9FAFB", // light gray
-        lightGrey: "#F6F5F2",
-        darkGrey: "#EEEEEE",
-      },
-      textColor: {
-        primary: "#333",
-        secondary: "#65B741",
-        accent: "#FFD23F",
-        lightGrey: "#F6F5F2",
-      },
-      borderColor: {
-        primary: "#FEFBF6",
-        secondary: "#65B741",
-        accent: "#FFD23F",
-        lightGrey: "#F6F5F2",
-      },
       boxShadow: {
         form: "0 0 24px 0 rgba(0, 0, 0, 0.1)",
         sidebar: "2px 0 4px 0 rgba(0, 0, 0, 0.1)",
       },
       colors: {
+        primary: "#166534",
+        secondary: "#22C55E",
+        accent: "#F97316",
+        background: "#F9FAFB",
+        lightGrey: "#F6F5F2",
+        darkGrey: "#EEEEEE",
         grey: "#9D9D9D",
       },
       fontWeight: {

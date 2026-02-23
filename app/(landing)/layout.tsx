@@ -1,6 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import Footer from "../components/Footer";
 
 export default async function RootLayout({
   children,

@@ -1,47 +1,47 @@
-import React from "react";
 import { Product } from "@/context/product";
 import Banner from "./components/Banner";
 import ListProduct from "./components/ListProduct";
-import Footer from "../components/Footer/Footer";
 
-const fetchProducts = async (
-  page: string
-): Promise<{
+// ─── API ──────────────────────────────────────────────────────────────────────
+
+interface ProductResponse {
   currentPage: number;
   totalProducts: number;
   totalPages: number;
   products: Product[];
-}> => {
-  try {
-    const res = await fetch(`${process.env.API}/product?page=${page}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      console.log("Fetching products Error: " + res);
-    }
+}
 
-    const data = await res.json();
-    return data;
-  } catch (err: any) {
-    console.log(err);
-    throw new Error("Failed to fetch products");
+async function fetchProducts(page: string): Promise<ProductResponse> {
+  const res = await fetch(`${process.env.API}/product?page=${page}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch products: ${res.statusText}`);
   }
-};
 
-const page = async ({ searchParams }: { searchParams: { page: string } }) => {
+  return res.json();
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+interface PageProps {
+  searchParams: { page?: string };
+}
+
+export default async function HomePage({ searchParams }: PageProps) {
   const { currentPage, totalProducts, totalPages, products } =
-    await fetchProducts(searchParams.page);
+    await fetchProducts(searchParams.page ?? "1");
 
   return (
-    <main className="container w-full">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
       <Banner />
       <ListProduct
         currentPage={currentPage}
         totalPages={totalPages}
+        totalProducts={totalProducts}
         products={products}
       />
     </main>
   );
-};
-
-export default page;
+}

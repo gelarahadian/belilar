@@ -1,34 +1,38 @@
 "use client";
+
 import { useProduct } from "@/context/product";
-import React, { FormEventHandler } from "react";
-import { CiSearch } from "react-icons/ci";
 import { IoSearchOutline } from "react-icons/io5";
 
-const ProductSearchForm = () => {
+export default function ProductSearchForm() {
   const {
     fetchProductSearchResults,
     setProductSearchQuery,
     productSearchQuery,
   } = useProduct();
+
   return (
-    <form className="w-full" role="search" onSubmit={fetchProductSearchResults}>
-      <div className="flex border rounded-sm p-2 focus-within:border-secondary">
+    <form
+      className="w-full max-w-xl"
+      role="search"
+      onSubmit={fetchProductSearchResults}
+    >
+      <div className="flex items-center gap-2 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:bg-white focus-within:border-primary-400 focus-within:ring-4 focus-within:ring-primary-100 transition-all duration-200">
+        <IoSearchOutline className="text-gray-400 text-lg flex-shrink-0" />
         <input
           type="search"
-          placeholder="Cari Produk"
-          aria-label="search"
-          className="outline-none w-full"
-          onChange={(e) => {
-            setProductSearchQuery(e.target.value);
-          }}
+          placeholder="Search product, brand, or category..."
+          aria-label="Search product"
+          className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400 min-w-0"
           value={productSearchQuery}
+          onChange={(e) => setProductSearchQuery(e.target.value)}
         />
-        <button className="px-4 py-2" type="submit">
-          <IoSearchOutline />
+        <button
+          type="submit"
+          className="flex-shrink-0 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors duration-150"
+        >
+          Search
         </button>
       </div>
     </form>
   );
-};
-
-export default ProductSearchForm;
+}

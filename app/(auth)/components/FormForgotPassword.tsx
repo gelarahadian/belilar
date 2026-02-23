@@ -107,7 +107,7 @@ export default function FormForgotPassword() {
         leftIcon={<HiMail />}
         helperText="We'll send a password reset link to this address."
         required
-        // pattern={EMAIL_PATTERN}
+        validation={{ pattern: EMAIL_PATTERN }}
         register={register}
         errors={errors}
       />
