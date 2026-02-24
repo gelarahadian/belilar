@@ -2,6 +2,7 @@
 import {
   Category,
   Image,
+  Prisma,
   Product as PrismaProduct,
   Rating,
   Tag,
@@ -31,13 +32,13 @@ interface ProductImage {
   secure_url: string;
 }
 
-export interface Product extends PrismaProduct {
-  quantity?: number;
-  tags?: Tag[];
-  category?: Category;
-  ratings?: Rating[];
-  images: Image[];
-}
+export type Product = Prisma.ProductGetPayload<{
+  include: {
+    tags: true;
+    category: true;
+    ratings: true;
+  };
+}>;
 
 interface ProductContext {
   register: UseFormRegister<FieldValues>;

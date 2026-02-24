@@ -19,7 +19,6 @@ export default async function RootLayout({
   console.log("test", session);
   return (
     <body className={`${inter.className} overflow-y-scroll overflow-x-hidden`}>
-      <Toaster />
       {children}
     </body>
   );

@@ -19,7 +19,7 @@ export async function GET(req: Request) {
       take: pageSize,
       orderBy: { createdAt: "desc" },
       include: {
-        cartItems: true,
+        // cartItems: true,
         user: {
           select: {
             name: true,

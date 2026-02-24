@@ -20,27 +20,27 @@ const Step1: FC<Step1Props> = ({ onNextStep }) => {
         {cartItems.map((product) => (
           <div key={product.id} className="flex shadow-md  ">
             <div className="relative h-[200px] w-1/3">
-              <Image
+              {/* <Image
                 src={product?.images[0]?.secure_url}
                 alt={product.title}
                 fill
                 className="object-cover object-center"
-              />
+              /> */}
             </div>
             <div className="w-2/3 p-3">
-              <h3 className="text-2xl font-bold truncate">{product.title}</h3>
+              {/* <h3 className="text-2xl font-bold truncate">{product.title}</h3> */}
               <p className="text-xl font-bold ">
-                Rp.{product.price.toFixed(2)}
+                {/* Rp.{product.price.toFixed(2)} */}
               </p>
-              <p
+              {/* <p
                 dangerouslySetInnerHTML={{
                   __html:
                     product?.description?.length > 160
                       ? `${product.description.slice(0, 160)}...`
                       : product.description,
                 }}
-              />
-              <AddToCart product={product} reviewAndCheckout={false} />
+              /> */}
+              {/* <AddToCart product={product} reviewAndCheckout={false} /> */}
             </div>
           </div>
         ))}

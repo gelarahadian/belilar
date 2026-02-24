@@ -132,11 +132,11 @@ const UserOrders = () => {
                       {order.cartItems.map((item) => (
                         <div
                           key={item.id}
-                          onClick={() => router.push(`/product/${item.slug}`)}
+                          // onClick={() => router.push(`/product/${item.slug}`)}
                           className="cursor-pointer text-blue-500"
                         >
-                          {item.quantity} x {item.title} - Rp.
-                          {item.price.toFixed(2)}
+                          {/* {item.quantity} x {item.title} - Rp. */}
+                          {/* {item.price.toFixed(2)} */}
                           <br />
                         </div>
                       ))}

@@ -19,30 +19,28 @@ export async function PUT(req: Request) {
     });
     let updateProductLike = [];
 
-    if (product && product.likes.includes(session.user.id)) {
-      updateProductLike = product.likes.filter(
-        (user_id) => user_id.toString() !== session.user.id
-      );
-    } else {
-      updateProductLike = [...(product?.likes ?? []), session.user.id];
-    }
+    // if (product && product.likes.includes(session.user.id)) {
+    //   updateProductLike = product.likes.filter(
+    //     (user_id) => user_id.toString() !== session.user.id
+    //   );
+    // } else {
+    //   updateProductLike = [...(product?.likes ?? []), session.user.id];
+    // }
 
-    console.log("product_id:", product_id);
+    // const update = await prisma.product.update({
+    //   where: {
+    //     id: product_id,
+    //   },
+    //   data: {
+    //     likes: updateProductLike,
+    //   },
+    // });
 
-    const update = await prisma.product.update({
-      where: {
-        id: product_id,
-      },
-      data: {
-        likes: updateProductLike,
-      },
-    });
-
-    if (update.likes.includes(session.user.id)) {
-      return Response.json({ message: "product liked" }, { status: 200 });
-    } else {
-      return Response.json({ message: "product unliked" }, { status: 200 });
-    }
+    // if (update.likes.includes(session.user.id)) {
+    //   return Response.json({ message: "product liked" }, { status: 200 });
+    // } else {
+    //   return Response.json({ message: "product unliked" }, { status: 200 });
+    // }
   } catch (err: any) {
     console.log(err);
     return Response.json({ error: err.message }, { status: 500 });

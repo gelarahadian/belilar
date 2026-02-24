@@ -15,9 +15,9 @@ export async function GET(req: Request) {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
-        cartItems: true,
-      },
+      // include: {
+      //   cartItems: true,
+      // },
     });
     return Response.json({ orders }, { status: 200 });
   } catch (err) {

@@ -10,7 +10,6 @@ export default async function RootLayout({
   return (
     <body className={` overflow-y-scroll overflow-x-hidden `}>
       <Header />
-      <Toaster />
       {children}
       <Footer />
     </body>

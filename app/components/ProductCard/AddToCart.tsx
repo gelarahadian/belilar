@@ -1,9 +1,17 @@
 "use client";
-import Button from "@/app/components/Button";
-import { useCart } from "@/context/cart";
-import { Product } from "@/context/product";
+
+import { FC, useEffect, useState } from "react";
 import Link from "next/link";
-import React, { FC, useEffect, useState } from "react";
+import { Product } from "@/context/product";
+import { HiMinus, HiPlus, HiShoppingCart } from "react-icons/hi";
+import {
+  useCart,
+  useAddToCart,
+  useUpdateCartItem,
+  useRemoveCartItem,
+} from "@/hooks/use-cart";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface AddToCartProps {
   product: Product;
@@ -14,84 +22,125 @@ const AddToCart: FC<AddToCartProps> = ({
   product,
   reviewAndCheckout = true,
 }) => {
-  const { cartItems, addToCart, updateCartQuantity, removeFromCart } =
-    useCart();
+  const { data: cart } = useCart();
+  const { mutate: addToCart, isPending: isAdding } = useAddToCart();
+  const { mutate: updateItem, isPending: isUpdating } = useUpdateCartItem();
+  const { mutate: removeItem } = useRemoveCartItem();
+  const { data: session } = useSession();
 
-  const existingProduct = cartItems.find((item) => item.id === product.id);
-  const initialQuantity = existingProduct ? existingProduct.quantity : 1;
-
-  const [quantity, setQuantity] = useState(initialQuantity);
+  const existingItem = cart?.items.find(
+    (item) => item.product.id === product.id,
+  );
+  const [quantity, setQuantity] = useState(existingItem?.quantity ?? 1);
 
   useEffect(() => {
-    setQuantity(existingProduct ? existingProduct.quantity : 1);
-  }, [existingProduct]);
+    setQuantity(existingItem?.quantity ?? 1);
+  }, [existingItem]);
+
+  const isInCart = !!existingItem;
+  const isPending = isAdding || isUpdating;
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
 
   const handleIncrement = () => {
-    if (quantity) {
-      const newQuantity = quantity + 1;
-      setQuantity(newQuantity);
-      updateCartQuantity(product, newQuantity);
-    }
+    if (!existingItem) return;
+    const next = quantity + 1;
+    setQuantity(next);
+    updateItem({ itemId: existingItem.id, quantity: next });
   };
 
   const handleDecrement = () => {
-    if (!quantity) {
-      return;
-    }
+    if (!existingItem) return;
     if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
-      updateCartQuantity(product, newQuantity);
+      const next = quantity - 1;
+      setQuantity(next);
+      updateItem({ itemId: existingItem.id, quantity: next });
     } else {
-      removeFromCart(product.id);
+      removeItem(existingItem.id);
       setQuantity(1);
     }
   };
-  const handleAddToCart = () => {
-    if (quantity) {
-      addToCart(product, quantity);
-    }
+
+  const handleQtyInput = (val: number) => {
+    if (!existingItem || val < 1) return;
+    setQuantity(val);
+    updateItem({ itemId: existingItem.id, quantity: val });
   };
+
+  const handleAddToCart = () => {
+    if (!session) {
+      toast.error("Please login first.");
+      return;
+    }
+    addToCart({ productId: product.id, quantity });
+  };
+
+  // ── In Cart: stepper ─────────────────────────────────────────────────────────
+  if (isInCart) {
+    return (
+      <div className="space-y-2 mt-3">
+        <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl overflow-hidden h-10">
+          <button
+            type="button"
+            onClick={handleDecrement}
+            disabled={isPending}
+            aria-label="Decrease quantity"
+            className="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors duration-150 disabled:opacity-40"
+          >
+            <HiMinus className="text-sm" />
+          </button>
+
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => handleQtyInput(Number(e.target.value))}
+            disabled={isPending}
+            aria-label="Quantity"
+            className="flex-1 text-center text-sm font-bold text-gray-800 outline-none bg-transparent [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none disabled:opacity-40"
+          />
+
+          <button
+            type="button"
+            onClick={handleIncrement}
+            disabled={
+              isPending ||
+              (product.stock !== undefined &&
+                product.stock !== null &&
+                quantity >= product.stock)
+            }
+            aria-label="Increase quantity"
+            className="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-150 disabled:opacity-40"
+          >
+            <HiPlus className="text-sm" />
+          </button>
+        </div>
+
+        {reviewAndCheckout && (
+          <Link href="/cart">
+            <div className="w-full h-10 flex items-center justify-center rounded-xl border-2 border-secondary-500 text-secondary-600 text-sm font-bold hover:bg-secondary-50 transition-colors duration-150">
+              Review & Checkout
+            </div>
+          </Link>
+        )}
+      </div>
+    );
+  }
+
+  // ── Not in cart: Add button ───────────────────────────────────────────────────
   return (
-    <div>
-      {cartItems?.some((item) => item?.id === product?.id) ? (
-        <>
-          <div className="flex justify-between items-center w-full mt-3">
-            <button
-              type="button"
-              onClick={handleDecrement}
-              className="border-secondary border h-10 w-10 hover:bg-secondary/10"
-            >
-              -
-            </button>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="text-center outline-none no-spin-arrows"
-            />
-            <button
-              type="button"
-              onClick={handleIncrement}
-              className="border-secondary border h-10 w-10 hover:bg-secondary/10"
-            >
-              +
-            </button>
-          </div>
-          {reviewAndCheckout && (
-            <Link href={"/cart"}>
-              <div className=" flex justify-center items-center rounded-lg px-4 h-10 font-bold text-center text-nowrap transition-all duration-200 ease-linear border border-secondary hover:bg-secondary/10 text-secondary mt-3">
-                Tinjau & Checkout
-              </div>
-            </Link>
-          )}
-        </>
+    <button
+      type="button"
+      onClick={handleAddToCart}
+      disabled={isAdding}
+      className="w-full mt-3 h-10 flex items-center justify-center gap-2 bg-primary/80 hover:bg-primary/90 active:bg-primary/95 text-white text-sm font-bold rounded-xl transition-colors duration-150 shadow-md shadow-primary-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
+    >
+      {isAdding ? (
+        <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
       ) : (
-        <Button onClick={handleAddToCart} className="w-full mt-3">
-          Add to cart
-        </Button>
+        <HiShoppingCart className="text-base" />
       )}
-    </div>
+      {isAdding ? "Adding…" : "Add to Cart"}
+    </button>
   );
 };
 

@@ -10,11 +10,11 @@ export async function GET(req: Request) {
 
   try {
     const likedProduct = await prisma.product.findMany({
-      where: {
-        likes: {
-          has: user_id,
-        },
-      },
+      // where: {
+      //   likes: {
+      //     has: user_id,
+      //   },
+      // },
     });
     return Response.json({ likedProduct });
   } catch (err: any) {

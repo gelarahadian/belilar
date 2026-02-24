@@ -38,6 +38,11 @@ model Session {
  
   @@map("sessions")
 }
+
+enum Role {
+  user
+  admin
+}
  
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -48,11 +53,14 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   password      String? @map("password")
   image         String?
-  role          String? @default(value: "user") 
+  role          Role @default(user) 
+
   accounts      Account[]
   sessions      Session[]
-  rating        Rating?
+  rating        Rating[]
   order         Order[]
+  likes         Like[]
+  cart          Cart?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
  
@@ -105,6 +113,7 @@ model Tag {
   updatedAt   DateTime @default(now())
 
   @@map("tags")
+  @@index([categoryId])
 }
 
 model Category {
@@ -125,11 +134,15 @@ model Rating {
   comment       String?
 
   postedBy      User @relation(fields: [postedById], references: [id]) 
-  postedById    String @unique @db.ObjectId
+  postedById    String @db.ObjectId
+
   productId     String @map("product_id") @db.ObjectId
   product       Product @relation(fields: [productId], references: [id])
   
   @@map("ratings")
+  @@unique([postedById, productId])
+  @@index([postedById])
+  @@index([productId])
 }
 
 model Product {
@@ -138,16 +151,16 @@ model Product {
     slug            String @unique
     description     String 
     price           Int
-    previousPrice   Int
-    images          Image[]
+    previousPrice   Int?
     color           String[]
     brand           String
     shipping        Int?
-    likes           String[] 
     stock           Int?
 
+    images          Image[]
     ratings         Rating[]
     cartItems       CartItem[]
+    likes           Like[]
     categoryId      String @map("category_id") @db.ObjectId
     category        Category @relation(fields: [categoryId], references: [id])
     tagIds          String[] @map("tag_ids") @db.ObjectId
@@ -156,6 +169,24 @@ model Product {
     updatedAt       DateTime @default(now())
 
   @@map("products")
+  @@index([categoryId])
+  @@index([createdAt])
+  @@index([brand])
+  @@index([categoryId, brand])
+}
+
+model Like {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId    String @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id])
+
+  productId String @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }
 
 type Image {
@@ -164,26 +195,56 @@ type Image {
 
 }
 
+enum OrderStatus {
+  pending
+  paid
+  failed
+  cancelled
+  refunded
+}
+
 model Order {
   id                String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId            String @map("user_id") @db.ObjectId
+  user              User @relation(fields: [userId], references: [id])
+
+  items             OrderItem[]
+
   chargeId          String
   payment_intent    String
   receipt_url       String 
   refunded          Boolean
-  status            String
+  status            OrderStatus
   amount_captured   Int 
   currency          String
+
   shipping          Shipping
-  userId            String @unique @map("user_id") @db.ObjectId
-  user              User @relation(fields: [userId], references: [id])
-  cartItemIds       String[] @map("cart_item_id") @db.ObjectId
-  cartItems         CartItem[] @relation(fields: [cartItemIds], references: [id])
   refundId          String?
   deliveryStatus    DeliveryStatus @default(NotProcessed)
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
 
   @@map("orders")
+  @@index([userId])
+  @@index([createdAt])
+
+}
+
+model OrderItem {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+
+  orderId   String @db.ObjectId
+  order     Order  @relation(fields: [orderId], references: [id])
+
+  productId String @db.ObjectId
+  title     String
+  price     Int
+  quantity  Int
+
+  @@map("orderItems")
+  @@index([orderId])
 }
 
 type Shipping {
@@ -199,21 +260,35 @@ type Address {
   state         String
 }
 
+model Cart {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("carts")
+  @@unique([userId])
+}
+
 model CartItem {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
-  productId   String @map("product_id") @unique @db.ObjectId
+
+  cartId      String @db.ObjectId
+  cart        Cart   @relation(fields: [cartId], references: [id])
+
+  productId   String @map("product_id") @db.ObjectId
   product     Product @relation(fields: [productId], references: [id])
-  title       String
-  slug        String
-  price       Int
-  image       String
+
   quantity    Int
-  orderIds    String[] @map("order_ids") @db.ObjectId
-  orders      Order[] @relation(fields: [orderIds], references: [id])
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
 
   @@map("cartItems")
+  @@index([cartId])
+  @@index([productId])
 }
 
 enum DeliveryStatus {

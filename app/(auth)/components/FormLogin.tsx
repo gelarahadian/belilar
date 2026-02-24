@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import toast from "react-hot-toast";
 
@@ -14,6 +14,13 @@ export default function FormLogin() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("redirected") === "true") {
+      toast.error("Please login first.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (formData: FormData) => {
     flushSync(() => setLoading(true));

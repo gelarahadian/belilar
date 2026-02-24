@@ -6,18 +6,24 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Product } from "./product";
 import toast from "react-hot-toast";
+import { CartItem, Prisma, Product } from "@prisma/client";
 
 interface CartProviderProps {
   children: React.ReactNode;
 }
 
+type CartItemWithProduct = Prisma.CartItemGetPayload<{
+  include: {
+    product: true;
+  };
+}>;
+
 interface CartContext {
-  cartItems: Product[];
-  addToCart: (product: Product, quantity: number) => void;
+  cartItems: CartItemWithProduct[];
+  // addToCart: (product: CartItemWithProduct, quantity: number) => void;
   removeFromCart: (productId: string) => void;
-  updateCartQuantity: (product: Product, quantity: number) => void;
+  updateCartQuantity: (productId: string, quantity: number) => void;
   couponCode: string;
   setCouponCode: React.Dispatch<React.SetStateAction<string>>;
   handleCoupon: (coupon: string) => void;
@@ -28,7 +34,7 @@ interface CartContext {
 export const CartContext = createContext<CartContext | null>(null);
 
 const CartProvider: FC<CartProviderProps> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<Product[] | []>([]);
+  const [cartItems, setCartItems] = useState<CartItemWithProduct[] | []>([]);
   // coupons
   const [couponCode, setCouponCode] = useState<string>("");
   const [percentOff, setPercentOff] = useState<number>(0);
@@ -50,11 +56,11 @@ const CartProvider: FC<CartProviderProps> = ({ children }) => {
       const updatedCartItems = cartItems.map((item) =>
         item.id === product.id
           ? { ...item, quantity: item.quantity ? item.quantity + 1 : 1 }
-          : item
+          : item,
       );
       setCartItems(updatedCartItems);
     } else {
-      setCartItems([...cartItems, { ...product, quantity }]);
+      // setCartItems([...cartItems, { ...product, quantity }]);
     }
     if (typeof window !== "undefined") {
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -72,9 +78,9 @@ const CartProvider: FC<CartProviderProps> = ({ children }) => {
   };
 
   //   update item quantity in cart
-  const updateCartQuantity = (product: Product, quantity: number) => {
+  const updateCartQuantity = (productId: string, quantity: number) => {
     const updatedCartItems = cartItems.map((item) =>
-      item.id === product.id ? { ...item, quantity } : item
+      item.productId === productId ? { ...item, quantity } : item,
     );
     setCartItems(updatedCartItems);
     if (typeof window !== "undefined") {
@@ -117,7 +123,7 @@ const CartProvider: FC<CartProviderProps> = ({ children }) => {
     <CartContext.Provider
       value={{
         cartItems,
-        addToCart,
+        // addToCart,
         removeFromCart,
         updateCartQuantity,
         couponCode,

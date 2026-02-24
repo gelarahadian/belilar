@@ -39,17 +39,17 @@ export async function POST(req: Request, res: Response) {
         },
         data: {
           ratings: {
-            update: [
-              {
-                where: {
-                  postedById: "6641767de8ac28e7f64f3608",
-                },
-                data: {
-                  rating: parseInt(rating),
-                  comment,
-                },
-              },
-            ],
+            // update: [
+            //   {
+            //     where: {
+            //       postedById: "6641767de8ac28e7f64f3608",
+            //     },
+            //     data: {
+            //       rating: parseInt(rating),
+            //       comment,
+            //     },
+            //   },
+            // ],
           },
         },
         include: {

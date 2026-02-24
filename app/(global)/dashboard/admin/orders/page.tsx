@@ -156,7 +156,7 @@ const AdminOrder = () => {
                     {order.shipping.address.country}
                   </td>
                 </tr>
-
+                {/* 
                 <tr className="bg-slate-200">
                   <th className="p-3 text-start">Pesanan Produk:</th>
                   <td>
@@ -174,7 +174,7 @@ const AdminOrder = () => {
                       ))}
                     </div>
                   </td>
-                </tr>
+                </tr> */}
 
                 <tr>
                   <th className="text-start p-3">Status Pesanan:</th>
@@ -183,7 +183,7 @@ const AdminOrder = () => {
                       onChange={(e) =>
                         handleStatusChange(
                           e.target.value as DeliveryStatus,
-                          order.id
+                          order.id,
                         )
                       }
                       value={order.deliveryStatus}

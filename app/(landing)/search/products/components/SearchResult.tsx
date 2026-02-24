@@ -33,8 +33,7 @@ const SearchResult = () => {
     }
   };
   return (
-    <div>
-      product results {productSearchResults.length}
+    <div className="flex justify-center flex-wrap w-full gap-3 mx-auto">
       {productSearchResults.map((product) => {
         return <ProductCard product={product} />;
       })}

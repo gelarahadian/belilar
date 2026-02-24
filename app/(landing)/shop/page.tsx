@@ -1,20 +1,24 @@
-import React from "react";
-import ProductFilter from "../components/ProductFilter";
+import { Product } from "@/context/product";
+import ProductFilter from "./ProductFilter";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from "../components/Pagination";
-import { Product } from "@/context/product";
+import { HiSparkles } from "react-icons/hi";
 
 export const dynamic = "force-dynamic";
 
-const fetchProducts = async (searchParams: {
-  [key: string]: string | undefined;
-}): Promise<{
+// ─── API ──────────────────────────────────────────────────────────────────────
+
+interface ProductResponse {
   currentPage: number;
   totalProducts: number;
   totalPages: number;
   products: Product[];
-}> => {
-  const searchQuery = new URLSearchParams({
+}
+
+async function fetchProducts(
+  searchParams: Record<string, string | undefined>,
+): Promise<ProductResponse> {
+  const query = new URLSearchParams({
     page: String(searchParams.page || 1),
     minPrice: searchParams.minPrice || "",
     maxPrice: searchParams.maxPrice || "",
@@ -26,49 +30,77 @@ const fetchProducts = async (searchParams: {
   }).toString();
 
   try {
-    const response = await fetch(
-      `${process.env.API}/product/filters?${searchQuery}`,
-      {
-        method: "GET",
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${process.env.API}/product/filters?${query}`, {
+      cache: "no-store",
+    });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch product");
-    }
+    if (!res.ok) throw new Error("Failed to fetch products");
 
-    const data = await response.json();
+    const data = await res.json();
+    if (!data || !Array.isArray(data.products))
+      throw new Error("Invalid response");
 
-    if (!data || !Array.isArray(data.products)) {
-      throw new Error("No product returned");
-    }
     return data;
   } catch (err) {
-    console.log(err);
+    console.error("[SHOP_FETCH]", err);
     return { products: [], currentPage: 1, totalPages: 1, totalProducts: 0 };
   }
-};
+}
 
-const page = async ({
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+  searchParams: Record<string, string | undefined>;
+}) {
   const { currentPage, totalProducts, totalPages, products } =
     await fetchProducts(searchParams);
 
   return (
-    <main className="max-w-6xl mx-auto w-full p-3">
-      <ProductFilter searchParams={searchParams} />
-      <div className="flex justify-center flex-wrap w-full gap-3 mx-auto">
-        {products.map((product) => {
-          return <ProductCard product={product} />;
-        })}
-      </div>
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
-    </main>
-  );
-};
+    <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-6">
+      <div className="flex gap-6 items-start">
+        {/* ── Sidebar Filter ─────────────────────────────────────────────── */}
+        <ProductFilter searchParams={searchParams} />
 
-export default page;
+        {/* ── Product Area ───────────────────────────────────────────────── */}
+        <main className="flex-1 min-w-0">
+          {/* Header row */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-bold text-gray-900">All Products</h1>
+            </div>
+            {totalProducts > 0 && (
+              <p className="text-xs text-gray-400">
+                {totalProducts.toLocaleString("id-ID")} products found
+              </p>
+            )}
+          </div>
+
+          {/* Grid */}
+          {products.length > 0 ? (
+            <ul className="flex flex-wrap gap-3">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
+                <HiSparkles className="text-2xl text-gray-300" />
+              </div>
+              <p className="text-sm font-semibold text-gray-700">
+                No products found
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Try adjusting your filters or search query
+              </p>
+            </div>
+          )}
+
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        </main>
+      </div>
+    </div>
+  );
+}

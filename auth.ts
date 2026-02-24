@@ -3,8 +3,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
-import bcrypt from "bcryptjs";
+import NextAuth, { type DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface User {

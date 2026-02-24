@@ -58,49 +58,47 @@ export async function POST(req: Request) {
         console.log(cartItemsWithProductDetails.length);
 
         // create order
-        const newOrder = await prisma.order.create({
-          data: {
-            chargeId: id as string,
-            payment_intent: rest.payment_intent as string,
-            receipt_url: rest.receipt_url as string,
-            refunded: rest.refunded as boolean,
-            status: rest.status as string,
-            amount_captured: rest.amount_captured as number,
-            currency: rest.currency as string,
-            shipping: {
-              address: {
-                city: rest.shipping.address.city,
-                country: rest.shipping.address.country,
-                line1: rest.shipping.address.line1,
-                line2: rest.shipping.address.line2,
-                postal_code: rest.shipping.address.postal_code,
-                state: rest.shipping.address.state,
-              },
-            },
-            user: {
-              connect: {
-                id: chargeSucceeded.metadata.userId,
-              },
-            },
-            cartItems: {
-              create: cartItemsWithProductDetails.map((item: CartItem) => {
-                console.log(item);
-                return {
-                  product: {
-                    connect: { id: item.id },
-                  },
-                  title: item.title,
-                  slug: item.slug,
-                  price: item.price,
-                  image: item.image,
-                  quantity: item.quantity,
-                };
-              }) as CartItem[],
-            },
-          },
-        });
+        // const newOrder = await prisma.order.create({
+        //   data: {
+        //     chargeId: id as string,
+        //     payment_intent: rest.payment_intent as string,
+        //     receipt_url: rest.receipt_url as string,
+        //     refunded: rest.refunded as boolean,
+        //     // status: rest.status as string,
+        //     amount_captured: rest.amount_captured as number,
+        //     currency: rest.currency as string,
+        //     shipping: {
+        //       address: {
+        //         city: rest.shipping.address.city,
+        //         country: rest.shipping.address.country,
+        //         line1: rest.shipping.address.line1,
+        //         line2: rest.shipping.address.line2,
+        //         postal_code: rest.shipping.address.postal_code,
+        //         state: rest.shipping.address.state,
+        //       },
+        //     },
+        //     user: {
+        //       connect: {
+        //         id: chargeSucceeded.metadata.userId,
+        //       },
+        //     },
+        //     // cartItems: {
+        //     //   create: cartItemsWithProductDetails.map((item: CartItem) => {
+        //     //     return {
+        //     //       product: {
+        //     //         connect: { id: item.id },
+        //     //       },
+        //     //       title: item.title,
+        //     //       slug: item.slug,
+        //     //       price: item.price,
+        //     //       image: item.image,
+        //     //       quantity: item.quantity,
+        //     //     };
+        //     //   }) as CartItem[],
+        //     // },
+        //   },
+        // });
 
-        console.log(newOrder);
         for (const cartItem of cartItems) {
           const product = await prisma.product.findUnique({
             where: {

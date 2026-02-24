@@ -1,11 +1,11 @@
 "use client";
-import { Product } from "@prisma/client";
+
+import { FC, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Span } from "next/dist/trace";
 import { usePathname, useRouter } from "next/navigation";
-import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { BiLike, BiSolidLike } from "react-icons/bi";
+import { Product } from "@prisma/client";
 
 interface ProductLikeProps {
   product: Product;
@@ -15,36 +15,63 @@ const ProductLike: FC<ProductLikeProps> = ({ product }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const [likes, setLikes] = useState(product.likes || []);
+  const [likes, setLikes] = useState<string[]>([]);
+
+  const isLiked = likes.includes(session?.user?.id ?? "");
 
   const handleLike = async () => {
     if (status === "unauthenticated") {
-      toast.error("Silahkan Login Terlebih dahulu");
-      router.push(`/login?callbackUrl=${pathname}`);
+      toast.error("Please sign in to like this product.");
+      router.push(`/sign-in?callbackUrl=${pathname}`);
       return;
     }
+
+    // Optimistic update
+    const wasLiked = isLiked;
+    setLikes((prev) =>
+      wasLiked
+        ? prev.filter((id) => id !== session?.user?.id)
+        : [...prev, session!.user!.id!],
+    );
+
     const res = await fetch(`${process.env.API}/user/product/like`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: product.id }),
     });
-    console.log(await res.json());
-    window.location.reload();
+
+    if (!res.ok) {
+      // Revert on failure
+      setLikes((prev) =>
+        wasLiked
+          ? [...prev, session!.user!.id!]
+          : prev.filter((id) => id !== session?.user?.id),
+      );
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <button
+      type="button"
       onClick={handleLike}
-      className="flex items-center truncate text-secondaryText cursor-pointer"
+      aria-label={isLiked ? "Unlike product" : "Like product"}
+      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all duration-150 ${
+        isLiked
+          ? "bg-red-50 border-red-200 text-red-500 hover:bg-red-100"
+          : "bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+      }`}
     >
-      {likes.includes(session?.user?.id || "") ? (
-        <BiSolidLike className="mr-[2px] text-red-500" />
+      {isLiked ? (
+        <BiSolidLike className="text-base flex-shrink-0" />
       ) : (
-        <BiLike className="mr-[2px]" />
+        <BiLike className="text-base flex-shrink-0" />
       )}
-      {likes.length > 0 ? <span>{likes.length} like</span> : <span>like</span>}
+      <span>
+        {likes.length > 0
+          ? `${likes.length} Like${likes.length > 1 ? "s" : ""}`
+          : "Like"}
+      </span>
     </button>
   );
 };
