@@ -54,7 +54,7 @@ export default function CartPageClient() {
         </p>
         <Link
           href="/"
-          className="bg-primary-600 hover:bg-primary-700 text-white font-bold px-6 py-2.5 rounded-xl transition-colors duration-150"
+          className="bg-primary/90 hover:bg-primary text-white font-bold px-6 py-2.5 rounded-xl transition-colors duration-150"
         >
           Start Shopping
         </Link>
@@ -107,16 +107,25 @@ export default function CartPageClient() {
               <div className="flex-1 min-w-0 space-y-1">
                 <Link
                   href={`/product/${item.product.slug}`}
-                  className="text-sm font-semibold text-gray-800 hover:text-primary-700 line-clamp-1 transition-colors duration-150"
+                  className="text-sm font-semibold text-gray-800 hover:text-primary line-clamp-1 transition-colors duration-150"
                 >
                   {item.product.title}
                 </Link>
-                <p className="text-base font-black text-primary-700">
-                  Rp
-                  {(item.product.price * item.quantity).toLocaleString("id-ID")}
+                <p className="text-base font-black text-primary">
+                  {(item.product.price * item.quantity).toLocaleString(
+                    "en-US",
+                    {
+                      style: "currency",
+                      currency: "USD",
+                    },
+                  )}
                 </p>
                 <p className="text-xs text-gray-400">
-                  Rp{item.product.price.toLocaleString("id-ID")} / item
+                  {item.product.price.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}{" "}
+                  / item
                 </p>
               </div>
 
@@ -150,7 +159,7 @@ export default function CartPageClient() {
                   onClick={() =>
                     updateItem({ itemId: item.id, quantity: item.quantity + 1 })
                   }
-                  className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-150 disabled:opacity-40"
+                  className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-primary hover:bg-primary-50 transition-colors duration-150 disabled:opacity-40"
                 >
                   <HiPlus className="text-xs" />
                 </button>
@@ -175,24 +184,30 @@ export default function CartPageClient() {
         <div className="flex justify-between text-sm text-gray-500">
           <span>Subtotal ({cart.items.length} items)</span>
           <span className="font-semibold text-gray-800">
-            Rp{cart.total.toLocaleString("id-ID")}
+            {cart.total.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
           </span>
         </div>
         <div className="flex justify-between text-sm text-gray-500">
           <span>Shipping</span>
-          <span className="text-primary-600 font-semibold">
+          <span className="text-primary font-semibold">
             Calculated at checkout
           </span>
         </div>
         <div className="border-t border-gray-100 pt-3 flex justify-between">
           <span className="font-bold text-gray-900">Total</span>
-          <span className="font-black text-xl text-primary-700">
-            Rp{cart.total.toLocaleString("id-ID")}
+          <span className="font-black text-xl text-primary">
+            {cart.total.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
           </span>
         </div>
         <Link
           href="/checkout"
-          className="block w-full bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white text-sm font-bold py-3 rounded-xl text-center transition-colors duration-150 shadow-md shadow-primary-600/20"
+          className="block w-full bg-primary/80 hover:bg-primary/90 active:bg-primary/90 text-white text-sm font-bold py-3 rounded-xl text-center transition-colors duration-150 shadow-md shadow-primary/20"
         >
           Proceed to Checkout
         </Link>
