@@ -238,9 +238,10 @@ model OrderItem {
   orderId   String @db.ObjectId
   order     Order  @relation(fields: [orderId], references: [id])
 
-  productId String @db.ObjectId
+  productId String @db.ObjectId  // soft reference, no @relation
   title     String
   price     Int
+  image     String
   quantity  Int
 
   @@map("orderItems")

@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       // This comes from validate route: data.couponId → passed as couponCode
       ...(couponCode ? { discounts: [{ coupon: couponCode }] } : {}),
 
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/user/stripe/success`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/user/stripe/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
     });
 

@@ -17,14 +17,14 @@ export async function POST(req: Request) {
       where: {
         id: orderId as string | undefined,
       },
-      // include: {
-      //   cartItems: {
-      //     select: {
-      //       productId: true,
-      //       quantity: true,
-      //     },
-      //   },
-      // },
+      include: {
+        items: {
+          select: {
+            productId: true,
+            quantity: true,
+          },
+        },
+      },
     });
 
     // check is order exists
@@ -39,24 +39,23 @@ export async function POST(req: Request) {
     });
 
     // update quantitties of product on refunded items
-    // for (const cartItem of order.cartItems) {
-    //   console.log("cartItem ===========>", cartItem);
-    //   const product = await prisma.product.findUnique({
-    //     where: {
-    //       id: cartItem.productId,
-    //     },
-    //   });
-    //   if (product) {
-    //     await prisma.product.update({
-    //       where: {
-    //         id: product.id,
-    //       },
-    //       data: {
-    //         stock: (product?.stock || 0) + cartItem.quantity,
-    //       },
-    //     });
-    //   }
-    // }
+    for (const orderItem of order.items) {
+      const product = await prisma.product.findUnique({
+        where: {
+          id: orderItem.productId,
+        },
+      });
+      if (product) {
+        await prisma.product.update({
+          where: {
+            id: product.id,
+          },
+          data: {
+            stock: { increment: orderItem.quantity },
+          },
+        });
+      }
+    }
 
     // updata order in the databbase with refunds details
     await prisma.order.update({
@@ -64,7 +63,7 @@ export async function POST(req: Request) {
         id: orderId as string | undefined,
       },
       data: {
-        // status: "Refunded",
+        status: "refunded",
         refunded: true,
         deliveryStatus: "Cancelled",
         refundId: refund.id,
