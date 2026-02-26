@@ -9,6 +9,7 @@ export interface AppliedCoupon {
   code: string;
   discount?: number; // percent_off
   amount_off?: number; // fixed in cents
+  couponId?: string;
 }
 
 interface CouponInputProps {
@@ -38,6 +39,7 @@ export default function CouponInput({
           code: data.code ?? input.trim().toUpperCase(),
           discount: data.discount,
           amount_off: data.amount_off,
+          couponId: data.couponId,
         });
         setInput("");
       },
