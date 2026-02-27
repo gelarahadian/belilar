@@ -1,7 +1,5 @@
-import { auth } from "@/auth";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +13,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-  console.log("test", session);
   return (
     <body className={`${inter.className} overflow-y-scroll overflow-x-hidden`}>
       {children}

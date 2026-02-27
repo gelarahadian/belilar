@@ -28,14 +28,20 @@ export async function GET(req: Request, res: Response) {
             name: true,
           },
         },
-        ratings: {
+        reviews: {
           select: {
             rating: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
           },
         },
       },
     });
 
+    console.log(products);
     return Response.json(
       {
         currentPage: currentPage,

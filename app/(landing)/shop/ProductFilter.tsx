@@ -47,8 +47,8 @@ function FilterChip({
         href={href}
         className={`flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-150 ${
           active
-            ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-            : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
+            ? "bg-primary-500 text-white border-primary-500 shadow-sm shadow-primary-500/20"
+            : "bg-white text-gray-600 border-gray-200 hover:border-primary-500 hover:text-primary-500"
         }`}
       >
         {label}

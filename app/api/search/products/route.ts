@@ -73,7 +73,7 @@ export async function GET(req: Request) {
             name: true,
           },
         },
-        ratings: {
+        reviews: {
           select: {
             rating: true,
           },

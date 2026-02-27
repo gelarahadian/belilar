@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { PrismaClient, Rating } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import queryString from "query-string";
 
 interface Filter {
   category?: string;
@@ -66,7 +64,8 @@ export async function GET(req: NextRequest) {
       include: {
         category: { select: { id: true, name: true } },
         tags: { select: { id: true, name: true } },
-        ratings: { select: { rating: true } },
+        reviews: { select: { rating: true } },
+        likes: { select: { userId: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -77,10 +76,10 @@ export async function GET(req: NextRequest) {
 
     const filteredProducts = minRating
       ? allProducts.filter((product) => {
-          if (product.ratings.length === 0) return false;
+          if (product.reviews.length === 0) return false;
           const avg =
-            product.ratings.reduce((sum, r) => sum + r.rating, 0) /
-            product.ratings.length;
+            product.reviews.reduce((sum, r) => sum + r.rating, 0) /
+            product.reviews.length;
           return avg >= minRating;
         })
       : allProducts;

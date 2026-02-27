@@ -22,8 +22,8 @@ export default function Banner() {
           priority
         />
         {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-800/40 via-primary-900/40 to-primary-400/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-800 via-transparent to-transparent" />
       </div>
 
       {/* Decorative orbs */}

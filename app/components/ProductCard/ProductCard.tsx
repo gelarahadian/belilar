@@ -16,7 +16,7 @@ interface ProductCardProps {
 const ProductCard: FC<ProductCardProps> = ({ product }) => {
   const imageUrl =
     (product?.images[0] as { secure_url?: string })?.secure_url ?? "";
-  const rating = calculateAverageRating(product.ratings);
+  const rating = calculateAverageRating(product.reviews);
 
   return (
     <li className="group relative flex flex-col w-full sm:w-[188px] bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-primary-200 hover:shadow-xl hover:shadow-primary-900/10 transition-all duration-300 hover:-translate-y-1">
@@ -63,7 +63,7 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
               {rating}
             </span>
             <span className="text-xs text-gray-400">
-              ({product.ratings?.length ?? 0})
+              ({product.reviews?.length ?? 0})
             </span>
           </div>
 

@@ -1,48 +1,79 @@
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-export async function PUT(req: Request) {
-  const session = await auth();
-  const body = await req.json();
-  const { product_id } = body;
-  const prisma = new PrismaClient();
+// ─── PUT /api/user/product/like ───────────────────────────────────────────────
+// Body: { product_id: string }
+// Toggle like — if exists: remove, if not: create
 
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export async function PUT(req: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+    }
+
+    const { product_id } = await req.json();
+
+    if (!product_id) {
+      return NextResponse.json(
+        { message: "product_id is required." },
+        { status: 400 },
+      );
+    }
+
+    // Check product exists
     const product = await prisma.product.findUnique({
+      where: { id: product_id },
+      select: { id: true },
+    });
+
+    if (!product) {
+      return NextResponse.json(
+        { message: "Product not found." },
+        { status: 404 },
+      );
+    }
+
+    // Check if already liked
+    const existing = await prisma.like.findUnique({
       where: {
-        id: product_id,
+        userId_productId: {
+          userId: session.user.id,
+          productId: product_id,
+        },
       },
     });
-    let updateProductLike = [];
 
-    // if (product && product.likes.includes(session.user.id)) {
-    //   updateProductLike = product.likes.filter(
-    //     (user_id) => user_id.toString() !== session.user.id
-    //   );
-    // } else {
-    //   updateProductLike = [...(product?.likes ?? []), session.user.id];
-    // }
+    if (existing) {
+      // Unlike — remove
+      await prisma.like.delete({
+        where: { id: existing.id },
+      });
 
-    // const update = await prisma.product.update({
-    //   where: {
-    //     id: product_id,
-    //   },
-    //   data: {
-    //     likes: updateProductLike,
-    //   },
-    // });
+      return NextResponse.json(
+        { message: "Product unliked.", liked: false },
+        { status: 200 },
+      );
+    } else {
+      // Like — create
+      await prisma.like.create({
+        data: {
+          userId: session.user.id,
+          productId: product_id,
+        },
+      });
 
-    // if (update.likes.includes(session.user.id)) {
-    //   return Response.json({ message: "product liked" }, { status: 200 });
-    // } else {
-    //   return Response.json({ message: "product unliked" }, { status: 200 });
-    // }
-  } catch (err: any) {
-    console.log(err);
-    return Response.json({ error: err.message }, { status: 500 });
+      return NextResponse.json(
+        { message: "Product liked.", liked: true },
+        { status: 200 },
+      );
+    }
+  } catch (error: any) {
+    console.error("[PRODUCT_LIKE]", error);
+    return NextResponse.json(
+      { message: error.message ?? "Internal server error." },
+      { status: 500 },
+    );
   }
 }

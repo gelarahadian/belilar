@@ -1,12 +1,5 @@
 "use client";
-import {
-  Category,
-  Image,
-  Prisma,
-  Product as PrismaProduct,
-  Rating,
-  Tag,
-} from "@prisma/client";
+import { Prisma, Product as PrismaProduct, Tag } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import React, {
   FC,
@@ -36,7 +29,7 @@ export type Product = Prisma.ProductGetPayload<{
   include: {
     tags: true;
     category: true;
-    ratings: true;
+    reviews: true;
   };
 }>;
 

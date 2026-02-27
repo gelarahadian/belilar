@@ -132,7 +132,7 @@ const AddToCart: FC<AddToCartProps> = ({
       type="button"
       onClick={handleAddToCart}
       disabled={isAdding}
-      className="w-full mt-3 h-10 flex items-center justify-center gap-2 bg-primary/80 hover:bg-primary/90 active:bg-primary/95 text-white text-sm font-bold rounded-xl transition-colors duration-150 shadow-md shadow-primary-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
+      className="w-full mt-3 h-10 flex items-center justify-center gap-2 bg-primary-800 hover:bg-primary-900 active:bg-primary-950 text-white text-sm font-bold rounded-xl transition-colors duration-150 shadow-md shadow-primary-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
     >
       {isAdding ? (
         <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />

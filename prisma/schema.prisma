@@ -1,5 +1,5 @@
 generator client {
-  provider    = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "library"
 }
 
@@ -9,67 +9,51 @@ datasource db {
   directUrl = env("DIRECT_DATEBASE_URL")
 }
 
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
 model Account {
-  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String  @map("user_id") @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
- 
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @map("user_id") @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
- 
+
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id") @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@map("sessions")
 }
 
-enum Role {
-  user
-  admin
-}
- 
-model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String   @unique
-  emailVerified DateTime? @map("email_verified")
-  passwordResetTokens PasswordResetToken[]
-  emailVerificationTokens EmailVerificationToken[]
-  password      String? @map("password")
-  image         String?
-  role          Role @default(user) 
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String
+  expires    DateTime
 
-  accounts      Account[]
-  sessions      Session[]
-  rating        Rating[]
-  order         Order[]
-  likes         Like[]
-  cart          Cart?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
- 
-  @@map("users")
+  @@unique([identifier, token])
+  @@map("verificationtokens")
 }
 
 model PasswordResetToken {
   id        String   @id @default(cuid()) @map("_id")
-  token     String   @unique           // SHA-256 hashed token
+  token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
@@ -80,8 +64,8 @@ model PasswordResetToken {
 }
 
 model EmailVerificationToken {
-  id        String   @id @default(cuid())@map("_id")
-  otp       String                          // SHA-256 hashed OTP
+  id        String   @id @default(cuid()) @map("_id")
+  otp       String
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
@@ -90,83 +74,120 @@ model EmailVerificationToken {
   @@index([userId])
   @@map("emailVerificationTokens")
 }
- 
-model VerificationToken {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  identifier String
-  token      String
-  expires    DateTime
- 
-  @@unique([identifier, token])
-  @@map("verificationtokens")
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+enum Role {
+  user
+  admin
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  password      String?
+
+  image         String?
+  role          Role      @default(user)
+
+  accounts      Account[]
+  sessions      Session[]
+  cart          Cart?
+  orders        Order[]
+  reviews       Review[]          // renamed from rating/Rating
+  likes         Like[]            // used as wishlist
+  addresses     Address[]         // new — multiple saved addresses
+
+  passwordResetTokens     PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("users")
+}
+
+// ─── Address (new) ────────────────────────────────────────────────────────────
+
+model Address {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId      String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label       String  // e.g. "Home", "Office"
+  recipient   String  // recipient name
+  phone       String?
+  line1       String
+  line2       String?
+  city        String
+  state       String
+  postal_code String
+  country     String
+  isDefault   Boolean @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  @@map("addresses")
+  @@index([userId])
+}
+
+// ─── Product ──────────────────────────────────────────────────────────────────
+
+model Category {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  slug      String    @unique
+  tags      Tag[]
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+
+  @@map("categories")
 }
 
 model Tag {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  slug        String  @unique
-  categoryId  String @map("category_id") @db.ObjectId
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  productIDs  String[] @map("product_ids") @db.ObjectId
-  products    Product[] @relation(fields: [productIDs], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  slug       String    @unique
+  categoryId String    @map("category_id") @db.ObjectId
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  productIDs String[]  @map("product_ids") @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
 
   @@map("tags")
   @@index([categoryId])
 }
 
-model Category {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    slug      String @unique
-    tags      Tag[]
-    products  Product[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-
-    @@map("categories")
-}
-
-model Rating {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  rating        Int
-  comment       String?
-
-  postedBy      User @relation(fields: [postedById], references: [id]) 
-  postedById    String @db.ObjectId
-
-  productId     String @map("product_id") @db.ObjectId
-  product       Product @relation(fields: [productId], references: [id])
-  
-  @@map("ratings")
-  @@unique([postedById, productId])
-  @@index([postedById])
-  @@index([productId])
-}
-
 model Product {
-    id              String @id @default(auto()) @map("_id") @db.ObjectId
-    title           String @unique
-    slug            String @unique
-    description     String 
-    price           Int
-    previousPrice   Int?
-    color           String[]
-    brand           String
-    shipping        Int?
-    stock           Int?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String   @unique
+  slug          String   @unique
+  description   String
+  price         Int
+  previousPrice Int?
+  color         String[]
+  brand         String
+  shipping      Int?
+  stock         Int?
 
-    images          Image[]
-    ratings         Rating[]
-    cartItems       CartItem[]
-    likes           Like[]
-    categoryId      String @map("category_id") @db.ObjectId
-    category        Category @relation(fields: [categoryId], references: [id])
-    tagIds          String[] @map("tag_ids") @db.ObjectId
-    tags            Tag[] @relation(fields: [tagIds], references: [id])
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @default(now())
+  images    Image[]
+  reviews   Review[]     
+  cartItems CartItem[]
+  likes     Like[]       // wishlist
+
+  categoryId String   @map("category_id") @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  tagIds     String[] @map("tag_ids") @db.ObjectId
+  tags       Tag[]    @relation(fields: [tagIds], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("products")
   @@index([categoryId])
@@ -175,25 +196,84 @@ model Product {
   @@index([categoryId, brand])
 }
 
-model Like {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+type Image {
+  public_id  String
+  secure_url String
+}
 
-  userId    String @db.ObjectId
-  user      User   @relation(fields: [userId], references: [id])
+// ─── Review ────────────────────────────────────────────
 
-  productId String @db.ObjectId
+model Review {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  rating  Int     // 1–5
+  comment String?
+
+  userId  String  @db.ObjectId
+  user    User    @relation(fields: [userId], references: [id])
+
+  productId String  @db.ObjectId
   product   Product @relation(fields: [productId], references: [id])
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
   @@unique([userId, productId])
+  @@map("reviews")
   @@index([userId])
   @@index([productId])
 }
 
-type Image {
-  public_id    String 
-  secure_url   String 
+// ─── Like (Wishlist) ──────────────────────────────────────────────────────────
 
+model Like {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId    String  @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("likes")
+  @@index([userId])
+  @@index([productId])
 }
+
+// ─── Cart ─────────────────────────────────────────────────────────────────────
+
+model Cart {
+  id     String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId String     @db.ObjectId
+  user   User       @relation(fields: [userId], references: [id])
+  items  CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("carts")
+  @@unique([userId])
+}
+
+model CartItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  cartId    String  @db.ObjectId
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId String  @map("product_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("cartItems")
+  @@index([cartId])
+  @@index([productId])
+}
+
+// ─── Order ────────────────────────────────────────────────────────────────────
 
 enum OrderStatus {
   pending
@@ -203,42 +283,44 @@ enum OrderStatus {
   refunded
 }
 
+enum DeliveryStatus {
+  NotProcessed
+  Processing
+  Dispatched
+  Refunded
+  Cancelled
+  Delivered
+}
+
 model Order {
-  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String        @map("user_id") @db.ObjectId
+  user           User          @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  chargeId       String
+  payment_intent String
+  receipt_url    String
+  refunded       Boolean
+  status         OrderStatus
+  amount_captured Int
+  currency       String
+  shipping       Shipping
+  refundId       String?
+  deliveryStatus DeliveryStatus @default(NotProcessed)
 
-  userId            String @map("user_id") @db.ObjectId
-  user              User @relation(fields: [userId], references: [id])
-
-  items             OrderItem[]
-
-  chargeId          String
-  payment_intent    String
-  receipt_url       String 
-  refunded          Boolean
-  status            OrderStatus
-  amount_captured   Int 
-  currency          String
-
-  shipping          Shipping
-  refundId          String?
-  deliveryStatus    DeliveryStatus @default(NotProcessed)
-
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("orders")
   @@index([userId])
   @@index([createdAt])
-
 }
 
 model OrderItem {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
-
   orderId   String @db.ObjectId
   order     Order  @relation(fields: [orderId], references: [id])
-
-  productId String @db.ObjectId  // soft reference, no @relation
+  productId String @db.ObjectId
   title     String
   price     Int
   image     String
@@ -249,54 +331,14 @@ model OrderItem {
 }
 
 type Shipping {
-  address Address
+  address ShippingAddress
 }
 
-type Address {
-  city          String
-  country       String
-  line1         String
-  line2         String
-  postal_code   String 
-  state         String
-}
-
-model Cart {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String @db.ObjectId
-  user      User   @relation(fields: [userId], references: [id])
-  items     CartItem[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  @@map("carts")
-  @@unique([userId])
-}
-
-model CartItem {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-
-  cartId      String @db.ObjectId
-  cart        Cart   @relation(fields: [cartId], references: [id])
-
-  productId   String @map("product_id") @db.ObjectId
-  product     Product @relation(fields: [productId], references: [id])
-
-  quantity    Int
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-
-  @@map("cartItems")
-  @@index([cartId])
-  @@index([productId])
-}
-
-enum DeliveryStatus {
-  NotProcessed
-  Processing
-  Dispatched
-  Refunded
-  Cancelled
-  Delivered
+type ShippingAddress {
+  city        String
+  country     String
+  line1       String
+  line2       String
+  postal_code String
+  state       String
 }

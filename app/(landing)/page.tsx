@@ -17,6 +17,8 @@ async function fetchProducts(page: string): Promise<ProductResponse> {
   });
 
   if (!res.ok) {
+    const text = await res.text();
+    console.log(text);
     throw new Error(`Failed to fetch products: ${res.statusText}`);
   }
 
@@ -32,6 +34,7 @@ interface PageProps {
 export default async function HomePage({ searchParams }: PageProps) {
   const { currentPage, totalProducts, totalPages, products } =
     await fetchProducts(searchParams.page ?? "1");
+  console.log(products);
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">

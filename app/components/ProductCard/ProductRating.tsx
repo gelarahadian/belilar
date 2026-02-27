@@ -22,7 +22,7 @@ const ProductRating: FC<ProductRatingProps> = ({
   const pathname = usePathname();
 
   const [ratings, setRatings] = useState<{ userId: string; value: number }[]>(
-    (product.ratings as any[]) || [],
+    (product.reviews as any[]) || [],
   );
   const [hovered, setHovered] = useState<number | null>(null);
 

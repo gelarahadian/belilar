@@ -1,11 +1,11 @@
 import { calculateAverageRating } from "@/lib/helpers";
-import { Rating as PrismaRating } from "@prisma/client";
+import { Review } from "@/services/review.service";
 import React, { FC } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Rating } from "react-simple-star-rating";
 
 interface RatingDistributionProps {
-  reviews: PrismaRating[]; // Array of reviews with fields: rating, userId, productId, createdAt, updatedAt, user (user object with fields: id, name, avatar)
+  reviews: Review[]; // Array of reviews with fields: rating, userId, productId, createdAt, updatedAt, user (user object with fields: id, name, avatar)
 }
 
 const RatingDistribution: FC<RatingDistributionProps> = ({ reviews }) => {

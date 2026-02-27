@@ -1,15 +1,11 @@
 "use client";
-import { Rating as PrismaRating, User } from "@prisma/client";
 import React, { FC } from "react";
 import { Rating } from "react-simple-star-rating";
 import RatingDistribution from "./RatingDistribution";
-
-interface Rating extends PrismaRating {
-  postedBy: User;
-}
+import { Review } from "@/services/review.service";
 
 interface UserReviewsProps {
-  reviews?: Rating[];
+  reviews?: Review[];
 }
 
 const UserReviews: FC<UserReviewsProps> = ({ reviews }) => {
@@ -23,9 +19,9 @@ const UserReviews: FC<UserReviewsProps> = ({ reviews }) => {
             {reviews?.map((review) => (
               <li key={review.id} className="p-6 bg-primary shadow-md rounded">
                 <div>
-                  <p>
-                    <strong>{review.postedBy.name}</strong>
-                  </p>
+                  {/* <p>
+                    <strong>{review.user.name}</strong>
+                  </p> */}
                   <Rating
                     initialValue={review.rating}
                     SVGclassName="inline-block"

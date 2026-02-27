@@ -26,9 +26,9 @@ export async function GET(
             slug: true,
           },
         },
-        ratings: {
+        reviews: {
           include: {
-            postedBy: {
+            user: {
               select: {
                 name: true,
               },
