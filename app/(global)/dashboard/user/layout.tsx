@@ -1,5 +1,5 @@
 import Header from "@/app/components/Header/Header";
-import UserSidebar from "./components/UserSidebar";
+import UserSidebar from "../components/UserSidebar";
 
 export default function UserDashboardLayout({
   children,

@@ -1,22 +1,12 @@
-"use client";
-import { useProduct } from "@/context/product";
-import React, { useEffect } from "react";
-import ListProduct from "./components/ListProduct";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import AdminProductsPage from "./AdminProductPage";
 
-const page = () => {
-  const { products, fetchProducts } = useProduct();
+export const metadata = { title: "Products — Admin" };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+export default async function Page() {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== "admin") redirect("/");
 
-  console.log(products);
-
-  return (
-    <>
-      <ListProduct />
-    </>
-  );
-};
-
-export default page;
+  return <AdminProductsPage />;
+}

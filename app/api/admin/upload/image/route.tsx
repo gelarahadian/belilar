@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import { Trykker } from "next/font/google";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -17,7 +16,7 @@ export async function POST(req: Request, res: Response) {
 
     return Response.json(
       { public_id: data.public_id, secure_url: data.secure_url },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (e: any) {
     console.error(e);

@@ -232,7 +232,7 @@ model Like {
   user      User    @relation(fields: [userId], references: [id])
 
   productId String  @db.ObjectId
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -262,7 +262,7 @@ model CartItem {
   cartId    String  @db.ObjectId
   cart      Cart    @relation(fields: [cartId], references: [id])
   productId String  @map("product_id") @db.ObjectId
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int
 
   createdAt DateTime @default(now())
