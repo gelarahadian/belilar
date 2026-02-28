@@ -60,7 +60,7 @@ export default function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
         type="button"
         onClick={handleCheckout}
         disabled={isPending || items.length === 0}
-        className="w-full h-12 flex items-center justify-center gap-2 bg-primary/80 hover:bg-primary/90 active:bg-primary text-white font-bold rounded-2xl transition-colors duration-150 shadow-lg shadow-primary-600/25 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full h-12 flex items-center justify-center gap-2 bg-primary-800 hover:bg-primary-900 active:bg-primary text-white font-bold rounded-2xl transition-colors duration-150 shadow-lg shadow-primary-600/25 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {isPending ? (
           <>

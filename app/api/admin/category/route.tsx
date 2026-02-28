@@ -1,50 +1,76 @@
-import { PrismaClient } from "@prisma/client";
 import slugify from "slugify";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { name } = body;
+// ─── GET /api/admin/category ──────────────────────────────────────────────────
 
-  const prisma = new PrismaClient();
-
+export async function GET() {
   try {
-    const existingCategory = await prisma.category.findUnique({
-      where: {
-        slug: slugify(name, { lower: true }),
-      },
-    });
-
-    if (existingCategory) {
-      return Response.json(`Tag with name ${name} already exists`, {
-        status: 409,
-      });
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
     }
 
-    const newCategory = await prisma.category.create({
-      data: {
-        name: name,
-        slug: slugify(name, { lower: true }),
+    const categories = await prisma.category.findMany({
+      include: {
+        tags: { select: { id: true, name: true, slug: true } },
+        _count: { select: { products: true } },
       },
+      orderBy: { name: "asc" },
     });
 
-    return Response.json({ newCategory });
-  } catch (err: any) {
-    console.log(err);
-    return Response.json(err.message, { status: 500 });
+    return NextResponse.json({ categories }, { status: 200 });
+  } catch (error) {
+    console.error("[ADMIN_CATEGORY_GET]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }
 
-export async function GET() {
-  const prisma = new PrismaClient();
+// ─── POST /api/admin/category ─────────────────────────────────────────────────
+
+export async function POST(req: NextRequest) {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: {
-        createdAt: "desc",
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
+    }
+
+    const { name } = await req.json();
+    if (!name?.trim()) {
+      return NextResponse.json(
+        { message: "Name is required." },
+        { status: 400 },
+      );
+    }
+
+    const slug = slugify(name, { lower: true, strict: true });
+
+    const existing = await prisma.category.findUnique({ where: { slug } });
+    if (existing) {
+      return NextResponse.json(
+        { message: "Category already exists." },
+        { status: 409 },
+      );
+    }
+
+    const category = await prisma.category.create({
+      data: { name: name.trim(), slug },
+      include: {
+        tags: { select: { id: true, name: true, slug: true } },
+        _count: { select: { products: true } },
       },
     });
-    return Response.json({ categories });
-  } catch (err: any) {
-    console.log(err);
-    return Response.json(err.message, { status: 500 });
+
+    return NextResponse.json({ category }, { status: 201 });
+  } catch (error) {
+    console.error("[ADMIN_CATEGORY_POST]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }

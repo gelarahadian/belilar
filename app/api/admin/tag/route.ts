@@ -1,55 +1,77 @@
-import { PrismaClient } from "@prisma/client";
 import slugify from "slugify";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { name, categoryId } = body;
+// ─── GET /api/admin/tag ───────────────────────────────────────────────────────
 
-  const prisma = new PrismaClient();
-
-  if (!categoryId) {
-    return Response.json("Category Id Undefined", { status: 400 });
-  }
-
+export async function GET() {
   try {
-    const existingTag = await prisma.tag.findUnique({
-      where: {
-        slug: slugify(name),
-      },
-    });
-
-    if (existingTag) {
-      return Response.json(`Tag with name ${name} already exists`, {
-        status: 409,
-      });
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
     }
 
-    const tag = await prisma.tag.create({
-      data: {
-        name: name,
-        slug: slugify(name),
-        categoryId: categoryId,
+    const tags = await prisma.tag.findMany({
+      include: {
+        category: { select: { id: true, name: true } },
+        _count: { select: { products: true } },
       },
+      orderBy: [{ category: { name: "asc" } }, { name: "asc" }],
     });
 
-    return Response.json({ tag });
-  } catch (err: any) {
-    console.log(err);
-    return Response.json(err.message, { status: 500 });
+    return NextResponse.json({ tags }, { status: 200 });
+  } catch (error) {
+    console.error("[ADMIN_TAG_GET]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }
 
-export async function GET() {
-  const prisma = new PrismaClient();
+// ─── POST /api/admin/tag ──────────────────────────────────────────────────────
+
+export async function POST(req: NextRequest) {
   try {
-    const tags = await prisma.tag.findMany({
-      orderBy: {
-        createdAt: "desc",
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
+    }
+
+    const { name, categoryId } = await req.json();
+
+    if (!name?.trim() || !categoryId) {
+      return NextResponse.json(
+        { message: "Name and categoryId are required." },
+        { status: 400 },
+      );
+    }
+
+    const slug = slugify(name, { lower: true, strict: true });
+
+    const existing = await prisma.tag.findUnique({ where: { slug } });
+    if (existing) {
+      return NextResponse.json(
+        { message: "Tag already exists." },
+        { status: 409 },
+      );
+    }
+
+    const tag = await prisma.tag.create({
+      data: { name: name.trim(), slug, categoryId },
+      include: {
+        category: { select: { id: true, name: true } },
+        _count: { select: { products: true } },
       },
     });
-    return Response.json(tags);
-  } catch (err: any) {
-    console.log(err);
-    return new Response(err.message, { status: 500 });
+
+    return NextResponse.json({ tag }, { status: 201 });
+  } catch (error) {
+    console.error("[ADMIN_TAG_POST]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }

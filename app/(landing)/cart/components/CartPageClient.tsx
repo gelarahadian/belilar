@@ -54,7 +54,7 @@ export default function CartPageClient() {
         </p>
         <Link
           href="/"
-          className="bg-primary/90 hover:bg-primary text-white font-bold px-6 py-2.5 rounded-xl transition-colors duration-150"
+          className="bg-primary-800 hover:bg-primary-800 text-white font-bold px-6 py-2.5 rounded-xl transition-colors duration-150"
         >
           Start Shopping
         </Link>
@@ -111,7 +111,7 @@ export default function CartPageClient() {
                 >
                   {item.product.title}
                 </Link>
-                <p className="text-base font-black text-primary">
+                <p className="text-base font-black text-primary-800">
                   {(item.product.price * item.quantity).toLocaleString(
                     "en-US",
                     {
@@ -159,7 +159,7 @@ export default function CartPageClient() {
                   onClick={() =>
                     updateItem({ itemId: item.id, quantity: item.quantity + 1 })
                   }
-                  className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-primary hover:bg-primary-50 transition-colors duration-150 disabled:opacity-40"
+                  className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-primary-800 hover:bg-primary-50 transition-colors duration-150 disabled:opacity-40"
                 >
                   <HiPlus className="text-xs" />
                 </button>
@@ -192,13 +192,13 @@ export default function CartPageClient() {
         </div>
         <div className="flex justify-between text-sm text-gray-500">
           <span>Shipping</span>
-          <span className="text-primary font-semibold">
+          <span className="text-primary-800 font-semibold">
             Calculated at checkout
           </span>
         </div>
         <div className="border-t border-gray-100 pt-3 flex justify-between">
           <span className="font-bold text-gray-900">Total</span>
-          <span className="font-black text-xl text-primary">
+          <span className="font-black text-xl text-primary-800">
             {cart.total.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
@@ -207,7 +207,7 @@ export default function CartPageClient() {
         </div>
         <Link
           href="/checkout"
-          className="block w-full bg-primary/80 hover:bg-primary/90 active:bg-primary/90 text-white text-sm font-bold py-3 rounded-xl text-center transition-colors duration-150 shadow-md shadow-primary/20"
+          className="block w-full bg-primary-800 hover:bg-primary-900 active:bg-primary-900 text-white text-sm font-bold py-3 rounded-xl text-center transition-colors duration-150 shadow-md shadow-primary-200"
         >
           Proceed to Checkout
         </Link>

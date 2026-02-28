@@ -91,6 +91,7 @@ model User {
 
   image         String?
   role          Role      @default(user)
+  banned        Boolean   @default(false)
 
   accounts      Account[]
   sessions      Session[]

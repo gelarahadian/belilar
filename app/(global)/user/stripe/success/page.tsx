@@ -9,8 +9,8 @@ export default function UserStripeSuccess() {
     <main className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-sm w-full text-center space-y-6">
         {/* Icon */}
-        <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto">
-          <HiCheckCircle className="text-5xl text-primary/50" />
+        <div className="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center mx-auto">
+          <HiCheckCircle className="text-5xl text-primary-500" />
         </div>
 
         {/* Text */}
@@ -30,7 +30,7 @@ export default function UserStripeSuccess() {
         <div className="flex flex-col gap-2">
           <Link
             href="/dashboard/user/orders"
-            className="w-full h-11 flex items-center justify-center gap-2 bg-primary/80 hover:bg-primary/90 text-white text-sm font-bold rounded-xl transition-colors duration-150 shadow-md shadow-primary/20"
+            className="w-full h-11 flex items-center justify-center gap-2 bg-primary-800 hover:bg-primary/90 text-white text-sm font-bold rounded-xl transition-colors duration-150 shadow-md shadow-primary/20"
           >
             <HiShoppingBag className="text-base" />
             View My Orders

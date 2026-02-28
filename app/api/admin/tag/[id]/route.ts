@@ -1,65 +1,82 @@
-import { PrismaClient } from "@prisma/client";
 import slugify from "slugify";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+// ─── PATCH /api/admin/tag/[id] ────────────────────────────────────────────────
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } },
 ) {
-  const { id } = params;
-  const body = await request.json();
-  const { name, categoryId } = body;
-
-  const prisma = new PrismaClient();
-
-  const slugifyName = slugify(name);
-
-  if (!categoryId) {
-    return Response.json("Category Id Undefined", { status: 400 });
-  }
-
   try {
-    const existingTag = await prisma.tag.findUnique({
-      where: { slug: slugifyName },
-    });
-
-    if (existingTag && existingTag.id !== id) {
-      return Response.json("Tag already exists", { status: 409 });
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
     }
 
-    const tagUpdated = await prisma.tag.update({
-      where: {
-        id: id,
-      },
+    const { name, categoryId } = await req.json();
+    if (!name?.trim()) {
+      return NextResponse.json(
+        { message: "Name is required." },
+        { status: 400 },
+      );
+    }
+
+    const slug = slugify(name, { lower: true, strict: true });
+    const conflict = await prisma.tag.findFirst({
+      where: { slug, id: { not: params.id } },
+    });
+    if (conflict) {
+      return NextResponse.json(
+        { message: "Tag name already taken." },
+        { status: 409 },
+      );
+    }
+
+    const tag = await prisma.tag.update({
+      where: { id: params.id },
       data: {
-        name: name,
-        slug: slugify(name),
-        categoryId: categoryId,
+        name: name.trim(),
+        slug,
+        ...(categoryId && { categoryId }),
         updatedAt: new Date(),
+      },
+      include: {
+        category: { select: { id: true, name: true } },
+        _count: { select: { products: true } },
       },
     });
 
-    return Response.json({ tagUpdated });
-  } catch (err: any) {
-    return Response.json({ err: err.message });
+    return NextResponse.json({ tag }, { status: 200 });
+  } catch (error) {
+    console.error("[ADMIN_TAG_PATCH]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }
 
+// ─── DELETE /api/admin/tag/[id] ───────────────────────────────────────────────
+
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  { params }: { params: { id: string } },
 ) {
-  const { id } = params;
-  const prisma = new PrismaClient();
-
   try {
-    const tagDeleted = await prisma.tag.delete({
-      where: {
-        id: id,
-      },
-    });
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden." }, { status: 403 });
+    }
 
-    return Response.json({ tagDeleted });
-  } catch (err: any) {
-    return Response.json({ err: err.message });
+    await prisma.tag.delete({ where: { id: params.id } });
+    return NextResponse.json({ message: "Tag deleted." }, { status: 200 });
+  } catch (error) {
+    console.error("[ADMIN_TAG_DELETE]", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
   }
 }
