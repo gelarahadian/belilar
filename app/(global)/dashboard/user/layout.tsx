@@ -15,11 +15,6 @@ export default async function UserDashboardLayout({
     redirect("/sign-in?callbackUrl=/dashboard/user");
   }
 
-  // Admin → tidak perlu akses user dashboard
-  if (session.user.role === "admin") {
-    redirect("/dashboard/admin");
-  }
-
   return (
     <UserSidebar>
       <div className="flex flex-col min-h-screen">

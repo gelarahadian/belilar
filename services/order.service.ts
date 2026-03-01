@@ -61,20 +61,20 @@ export interface RefundOrderResponse {
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-  /** GET /api/user/order */
-  export const listOrders = async (): Promise<ListOrdersResponse> => {
-    const res = await fetch("/api/user/order", { cache: "no-store" });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message ?? "Failed to fetch orders.");
-    return data;
-  }
+/** GET /api/user/order */
+export const listOrders = async (): Promise<ListOrdersResponse> => {
+  const res = await fetch("/api/user/order", { cache: "no-store" });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? "Failed to fetch orders.");
+  return data;
+}
 
-  /** POST /api/user/order/refund?orderId=xxx */
-  export const refundOrder = async (orderId: string): Promise<RefundOrderResponse> => {
-    const res = await fetch(`/api/user/order/refund?orderId=${orderId}`, {
-      method: "POST",
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message ?? "Failed to refund order.");
-    return data;
-  }
+/** POST /api/user/order/refund?orderId=xxx */
+export const refundOrder = async (orderId: string): Promise<RefundOrderResponse> => {
+  const res = await fetch(`/api/user/order/refund?orderId=${orderId}`, {
+    method: "POST",
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? "Failed to refund order.");
+  return data;
+}

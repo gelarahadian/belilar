@@ -106,22 +106,20 @@ export default function UserMenu() {
             </div>
           )}
 
-          {/* Nav items — hanya tampil jika bukan admin */}
-          {!isAdmin && (
-            <div className="py-1.5">
-              {USER_MENU_ITEMS.map(({ label, icon: Icon, href }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
-                >
-                  <Icon className="text-base text-gray-400 flex-shrink-0" />
-                  {label}
-                </Link>
-              ))}
-            </div>
-          )}
+          {/* Nav items — selalu tampil untuk semua role */}
+          <div className="py-1.5">
+            {USER_MENU_ITEMS.map(({ label, icon: Icon, href }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
+              >
+                <Icon className="text-base text-gray-400 flex-shrink-0" />
+                {label}
+              </Link>
+            ))}
+          </div>
 
           {/* Sign out */}
           <div className="border-t border-gray-100 py-1.5">
