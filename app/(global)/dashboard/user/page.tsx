@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import DashboardClient from "./DashboardClient";
+import DashboardClient from "./components/DashboardClient";
 
 export const metadata = { title: "Dashboard — Belilar" };
 

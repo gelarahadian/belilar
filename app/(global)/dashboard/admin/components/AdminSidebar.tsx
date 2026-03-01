@@ -51,10 +51,7 @@ export default function AdminSidebar({ children }: AdminSidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-white/10 flex-shrink-0">
-          <Link
-            href="/dashboard/admin"
-            className="flex items-center gap-2.5 min-w-0"
-          >
+          <Link href="/" className="flex items-center gap-2.5 min-w-0">
             <Image
               src="/logo.png"
               width={26}

@@ -187,7 +187,7 @@ export default function WishlistPage() {
         </p>
         <Link
           href="/shop"
-          className="h-9 px-4 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl transition-colors duration-150"
+          className="h-9 px-4 leading-9 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl transition-colors duration-150"
         >
           Browse Products
         </Link>

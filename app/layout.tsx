@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "./components/Provider";
 import "./globals.css";
+import TopLoader from "./components/TopLoader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.className}`}>
-      <Provider>{children}</Provider>
+      <Provider>
+        <body className={` overflow-y-scroll overflow-x-hidden `}>
+          <TopLoader />
+          {children}
+        </body>
+      </Provider>
     </html>
   );
 }

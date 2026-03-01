@@ -13,9 +13,5 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <body className={`${inter.className} overflow-y-scroll overflow-x-hidden`}>
-      {children}
-    </body>
-  );
+  return <>{children}</>;
 }

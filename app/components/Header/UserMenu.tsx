@@ -12,11 +12,12 @@ import {
   HiLocationMarker,
   HiStar,
   HiViewGrid,
+  HiShieldCheck,
 } from "react-icons/hi";
 
-// ─── Sync dengan UserSidebar NAV_ITEMS ────────────────────────────────────────
+// ─── Nav items (sync dengan UserSidebar) ──────────────────────────────────────
 
-const MENU_ITEMS = [
+const USER_MENU_ITEMS = [
   { label: "Dashboard", icon: HiViewGrid, href: "/dashboard/user" },
   { label: "My Orders", icon: HiShoppingBag, href: "/dashboard/user/orders" },
   { label: "Profile", icon: HiUser, href: "/dashboard/user/profile" },
@@ -34,6 +35,10 @@ export default function UserMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  const isAdmin = session?.user?.role === "admin";
+  const initial = session?.user?.name?.[0]?.toUpperCase() ?? "U";
+  const firstName = session?.user?.name?.split(" ")[0];
+
   // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -44,9 +49,6 @@ export default function UserMenu() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
-  const initial = session?.user?.name?.[0]?.toUpperCase() ?? "U";
-  const firstName = session?.user?.name?.split(" ")[0];
 
   return (
     <div ref={ref} className="relative">
@@ -63,9 +65,7 @@ export default function UserMenu() {
           {firstName}
         </span>
         <HiChevronDown
-          className={`text-gray-400 text-sm transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`text-gray-400 text-sm transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -74,34 +74,60 @@ export default function UserMenu() {
         <div className="absolute right-0 top-11 w-52 bg-white border border-gray-100 rounded-2xl shadow-lg shadow-gray-200/60 overflow-hidden z-50">
           {/* User info */}
           <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-xs font-bold text-gray-900 truncate">
-              {session?.user?.name}
-            </p>
-            <p className="text-[11px] text-gray-400 truncate mt-0.5">
-              {session?.user?.email}
-            </p>
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-gray-900 truncate">
+                  {session?.user?.name}
+                </p>
+                <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                  {session?.user?.email}
+                </p>
+              </div>
+              {isAdmin && (
+                <span className="flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 bg-primary-50 text-primary-600 border border-primary-200 rounded-lg flex-shrink-0">
+                  <HiShieldCheck className="text-xs" />
+                  Admin
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* Nav items */}
-          <div className="py-1.5">
-            {MENU_ITEMS.map(({ label, icon: Icon, href }) => (
+          {/* Admin shortcut — hanya muncul jika role admin */}
+          {isAdmin && (
+            <div className="py-1.5 border-b border-gray-100">
               <Link
-                key={href}
-                href={href}
+                href="/dashboard/admin"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
+                className="flex items-center gap-2.5 px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50 transition-colors duration-150"
               >
-                <Icon className="text-base text-gray-400 flex-shrink-0" />
-                {label}
+                <HiShieldCheck className="text-base flex-shrink-0" />
+                Admin Dashboard
               </Link>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Nav items — hanya tampil jika bukan admin */}
+          {!isAdmin && (
+            <div className="py-1.5">
+              {USER_MENU_ITEMS.map(({ label, icon: Icon, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
+                >
+                  <Icon className="text-base text-gray-400 flex-shrink-0" />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Sign out */}
           <div className="border-t border-gray-100 py-1.5">
             <button
               type="button"
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors duration-150"
             >
               <HiLogout className="text-base flex-shrink-0" />
