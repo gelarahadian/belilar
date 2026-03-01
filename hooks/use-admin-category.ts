@@ -14,7 +14,7 @@ import {
   AdminCategory,
   AdminTag,
 } from "@/services/admin-category.service";
-import { adminCategoryKeys, adminTagKeys } from "./admin-category";
+import { adminCategoryKeys, adminTagKeys } from "./admin-category.keys";
 
 // ─── useAdminCategories ───────────────────────────────────────────────────────
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // ─── GET /api/user/review ─────────────────────────────────────────────────────
 // Returns:
 //   - reviews: all reviews written by user

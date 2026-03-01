@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import FormLogin from "../components/FormLogin";
+import { Suspense } from "react";
 
 const GOOGLE_ICON = "/google-color-svgrepo.svg";
 
@@ -18,7 +19,9 @@ export default function LoginPage() {
       </div>
 
       {/* Credentials Form */}
-      <FormLogin />
+      <Suspense fallback={<div>Loading...</div>}>
+        <FormLogin />
+      </Suspense>
 
       {/* Divider */}
       <div className="relative flex items-center gap-3">
